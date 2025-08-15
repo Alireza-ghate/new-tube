@@ -1,11 +1,11 @@
 // @ (alias) refers to the src folder
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function Home() {
   return (
-    <p className="text-3xl font-bold text-rose-500">
-      hello world!
-      <Button>click me</Button>
-    </p>
+    <div>
+      <Image src="/logo.svg" width={50} height={50} alt="logo" />
+      <p className="text-xl font-semibold tracking-tight">NewTube</p>
+    </div>
   );
 }
