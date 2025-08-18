@@ -7,6 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useAuth, useClerk } from "@clerk/nextjs";
 import { FlameIcon, HomeIcon, PlaySquareIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -31,6 +32,9 @@ const items = [
 ];
 
 function MainSection() {
+  const clerk = useClerk();
+  const { isSignedIn } = useAuth();
+
   return (
     <SidebarGroup>
       <SidebarGroupContent>
@@ -42,7 +46,15 @@ function MainSection() {
                 tooltip={item.title}
                 asChild /* using asChild forces instead of render <button> , render <a> (from Link which is its direct child) */
                 isActive={false}
-                onClick={() => {}}
+                onClick={(e) => {
+                  // if there is no user and our item has auth set to true instead of redirect user to that page, redirect user to sign in page
+                  // if user didnt logged in clicks on list item which has NOT auth property, by default redirects users to url
+                  //  protect any item which has auth property to avoid redirect unlogged in users
+                  if (!isSignedIn && item.auth) {
+                    e.preventDefault(); //without this if user clicks for short time modal pops out but after a sec redirects user to page
+                    return clerk.openSignIn();
+                  }
+                }}
               >
                 <Link className="flex items-center gap-x-4" href={item.url}>
                   <item.icon />
