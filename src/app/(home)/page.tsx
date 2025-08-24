@@ -4,6 +4,7 @@ import { HydrateClient, trpc } from "@/trpc/server";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import Client from "./Client";
+
 // anything this component returns, will be children prop in co-located layout.tsx
 // export default function HomePage() {
 //   return (
