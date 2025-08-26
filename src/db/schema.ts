@@ -21,3 +21,15 @@ export const users = pgTable(
   },
   (t) => [uniqueIndex("clerk_id_idx").on(t.clerkId)] // create unique index on "clerk_id" field for querying by clerk user id
 );
+
+export const categories = pgTable(
+  "categories",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: text("name").notNull().unique(), //notNull() means that this field is required // unique() means that this field must be unique
+    description: text("description"), //this is optional field bcs has no notNull()
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("name_idx").on(t.name)] //create index for "name" field in case we wanted to query by name
+);

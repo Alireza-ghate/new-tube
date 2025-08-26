@@ -1,40 +1,25 @@
 // @ (alias) refers to the src folder
 
+import HomeView from "@/modules/home/ui/views/home-view";
 import { HydrateClient, trpc } from "@/trpc/server";
-import { Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
-import Client from "./Client";
+
+export const dynamic = "force-dynamic";
 
 // anything this component returns, will be children prop in co-located layout.tsx
-// export default function HomePage() {
-//   return (
-//     <div className="text-3xl">
-//      home page
-//     </div>
-//   );
-// }
-
-// how we fetch data in a server component using tRPC(server version)
-/*
-async function HomePage() {
-  const data = await trpc.hello({ text: "alireza" });
-  return <div>{data.greeting}</div>;
+// when we try to build our project , nextJs will consider every single page that has this pre-fetch data strutcure as STATIC page
+// for make it dynamic we use (export const dynamic = force-dynamic;)
+interface HomePageProps {
+  searchParams: Promise<{
+    categoryId?: string;
+  }>;
 }
-
-export default HomePage;
-*/
-// how we PRE-fetch data in a server component using tRPC(server version)
-
-async function HomePage() {
-  void trpc.hello.prefetch({ text: "alireza" }); // prefetch data and save it into data cache in the server side, then client component will use this pre-fetched data
+async function HomePage({ searchParams }: HomePageProps) {
+  const { categoryId } = await searchParams;
+  void trpc.categories.getMany.prefetch(); // prefetch data and save it into data cache in the server side, then client component will use this pre-fetched data
   return (
+    // where ever in any single component we pre-fetch, we use HydrateClient
     <HydrateClient>
-      <ErrorBoundary fallback={<p>error...</p>}>
-        <Suspense fallback={<p>loading...</p>}>
-          {/* in this client component, we can use the pre-fetched data for Leveraging speed of server components */}
-          <Client />
-        </Suspense>
-      </ErrorBoundary>
+      <HomeView categoryId={categoryId} />
     </HydrateClient>
   );
 }
