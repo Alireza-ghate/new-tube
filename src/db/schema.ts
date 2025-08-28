@@ -33,3 +33,19 @@ export const categories = pgTable(
   },
   (t) => [uniqueIndex("name_idx").on(t.name)] //create index for "name" field in case we wanted to query by name
 );
+
+export const videos = pgTable("videos", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"), //can be null (its optional field)
+  // some of videos are connected to certain category or user while categories are optional and users are requierd
+  // each video obj has 3 ids: category id and user id and its own id
+  userId: uuid("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(), //required field //{ onDelete: "cascade" }: if user is deleted, delete all videos created by this user(userId=23 deleted , all videos created by userId=23 also deleted)
+  categoryId: uuid("category_id").references(() => categories.id, {
+    onDelete: "set null",
+  }), // optional field //{onDelete: "set null"} if we deleted a category, all videos related to that category wont be deleted instead their categoryId gonna be NULL
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
