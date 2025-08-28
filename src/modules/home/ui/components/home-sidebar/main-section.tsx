@@ -10,6 +10,7 @@ import {
 import { useAuth, useClerk } from "@clerk/nextjs";
 import { FlameIcon, HomeIcon, PlaySquareIcon } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 // our list items that we want to render
 const items = [
@@ -32,6 +33,7 @@ const items = [
 ];
 
 function MainSection() {
+  const pathname = usePathname();
   const clerk = useClerk();
   const { isSignedIn } = useAuth();
 
@@ -45,7 +47,7 @@ function MainSection() {
               <SidebarMenuButton
                 tooltip={item.title}
                 asChild /* using asChild forces instead of render <button> , render <a> (from Link which is its direct child) */
-                isActive={false}
+                isActive={pathname === item.url}
                 onClick={(e) => {
                   // if there is no user and our item has auth set to true instead of redirect user to that page, redirect user to sign in page
                   // if user didnt logged in clicks on list item which has NOT auth property, by default redirects users to url

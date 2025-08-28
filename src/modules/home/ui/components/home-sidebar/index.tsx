@@ -1,6 +1,9 @@
-import { Sidebar, SidebarContent } from "@/components/ui/sidebar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarSeparator,
+} from "@/components/ui/sidebar";
 import MainSection from "./main-section";
-import { Separator } from "@/components/ui/separator";
 import PersonalSection from "./personal-section";
 
 function HomeSidebar() {
@@ -8,7 +11,8 @@ function HomeSidebar() {
     <Sidebar className="pt-16 border-none z-40" collapsible="icon">
       <SidebarContent className="bg-background">
         <MainSection />
-        <Separator />
+        {/* <Separator /> */}
+        <SidebarSeparator />
         {/* render for both authenticated and unauthenticated users */}
         <PersonalSection />
       </SidebarContent>

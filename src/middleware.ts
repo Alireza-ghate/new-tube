@@ -1,9 +1,9 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 // by default middleware dosent protect anything! all routes are public!
-// here midleware only protects "/protected" rout here not the nested routs
+// here midleware only protects "/studio" rout here not the nested routs
 // for protect also mested subroutes we use (.*)
-const isProtectedRoute = createRouteMatcher(["/protected(.*)"]);
+const isProtectedRoute = createRouteMatcher(["/studio(.*)"]);
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) await auth.protect();
 });

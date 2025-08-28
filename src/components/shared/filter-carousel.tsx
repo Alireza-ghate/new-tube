@@ -23,7 +23,7 @@ function FilterCarousel({
   data,
   isLoading,
   onSelect,
-  value, //categoryId in url
+  value, //categoryId in url type is undefined | string
 }: FilterCarouselProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState<number>(0); //current number of item in carousel
