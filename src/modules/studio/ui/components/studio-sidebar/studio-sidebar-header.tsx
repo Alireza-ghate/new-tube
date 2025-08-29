@@ -14,7 +14,6 @@ import Link from "next/link";
 function StudioSidebarHeader() {
   const { user } = useUser();
   const { state } = useSidebar();
-  console.log(state);
 
   // whenever we reload page, user will be null until user be available
   if (!user) {

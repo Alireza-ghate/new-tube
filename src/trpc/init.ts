@@ -52,7 +52,7 @@ export const protectedProcedure = t.procedure.use(async function isAuthed(
     .where(eq(users.clerkId, ctx.clerkUserId))
     .limit(1); //eq: select user objects wich their clerkId is equal to ctx.clerkUserId
 
-  // IF THERE IS NO USER OBJ IN OUR DATABASE THROW AN ERROR
+  // IF THERE IS NO USER OBJ IN OUR DATABASE (no body signed up) THROW AN ERROR
   if (!user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }

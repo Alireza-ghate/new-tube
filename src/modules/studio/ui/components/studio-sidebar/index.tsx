@@ -16,7 +16,7 @@ import StudioSidebarHeader from "./studio-sidebar-header";
 
 function StudioSidebar() {
   const pathname = usePathname();
-  console.log(pathname);
+
   return (
     <Sidebar className="z-40 relative" collapsible="icon">
       <SidebarContent className="bg-background">
