@@ -6,7 +6,7 @@ import StudioUploadModal from "../studio-upload-modal";
 
 function StudioNavbar() {
   return (
-    <nav className="fixed top-0 left-0 right-0 h-16 px-2 pr-5 z-50 border-b shadow-md">
+    <nav className="fixed bg-background top-0 left-0 right-0 h-16 px-2 pr-5 z-50 border-b shadow-md">
       {/* navbar content goes here (container) */}
       <div className="flex items-center gap-x-4">
         {/* Menu and Logo */}

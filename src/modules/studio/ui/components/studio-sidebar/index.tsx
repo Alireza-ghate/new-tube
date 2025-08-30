@@ -18,7 +18,7 @@ function StudioSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="z-40 relative" collapsible="icon">
+    <Sidebar className="z-40 fixed top-16 left-0 bottom-0" collapsible="icon">
       <SidebarContent className="bg-background">
         <SidebarGroup>
           <SidebarMenu>
