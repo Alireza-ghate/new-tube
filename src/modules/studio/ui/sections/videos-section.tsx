@@ -11,9 +11,11 @@ import {
 } from "@/components/ui/table";
 import { DEFAULT_LIMIT } from "@/constants";
 import { trpc } from "@/trpc/client";
+import { Loader2Icon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import StudioUploadModal from "../components/studio-upload-modal";
 
 function VideosSectionSuspense() {
   // useSuspenseInfiniteQuery() expect 2 arguments 1: is basic input argument defined in input(), 2: getNextPageParams
@@ -23,6 +25,14 @@ function VideosSectionSuspense() {
     },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
+
+  // if (videos.pages.flatMap((page) => page.items).length === 0)
+  //   return (
+  //     <div className="text-center flex flex-col gap-y-4 items-center">
+  //       <p>There is no video. Upload a video to get started</p>
+  //       <StudioUploadModal />
+  //     </div>
+  //   );
 
   return (
     <div>
@@ -77,11 +87,20 @@ function VideosSectionSuspense() {
 
 function VideosSection() {
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<VideosSectionLoader />}>
       <ErrorBoundary fallback={<p>error..</p>}>
         <VideosSectionSuspense />
       </ErrorBoundary>
     </Suspense>
+  );
+}
+
+function VideosSectionLoader() {
+  return (
+    <div className="flex flex-col gap-y-2 items-center">
+      <Loader2Icon className="size-10 animate-spin text-gray-300" />
+      <p>Loading table content</p>
+    </div>
   );
 }
 

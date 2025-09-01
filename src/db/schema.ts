@@ -38,6 +38,12 @@ export const videos = pgTable("videos", {
   id: uuid("id").defaultRandom().primaryKey(),
   title: text("title").notNull(),
   description: text("description"), //can be null (its optional field)
+  muxStatus: text("mux_status"), // shows the status of video process in mux (ready or waiting)
+  muxAssetId: text("mux_asset_id").unique(),
+  muxUploadId: text("mux_upload_id").unique(),
+  muxPlaybackId: text("mux_playback_id").unique(),
+  muxTrackId: text("mux_track_id").unique(),
+  muxTrackStatus: text("mux_track_status"),
   // some of videos are connected to certain category or user while categories are optional and users are requierd
   // each video obj has 3 ids: category id and user id and its own id
   userId: uuid("user_id")
