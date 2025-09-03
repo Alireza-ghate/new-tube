@@ -42,7 +42,7 @@ export async function POST(request: Request) {
   );
 
   switch (payload.type as WebhookEvent["type"]) {
-    case "video.asset.created":
+    case "video.asset.created": {
       const data = payload.data as VideoAssetCreatedWebhookEvent["data"];
 
       if (!data.upload_id) {
@@ -55,6 +55,39 @@ export async function POST(request: Request) {
         .where(eq(videos.muxUploadId, data.upload_id));
 
       break;
+    }
+    case "video.asset.ready": {
+      const data = payload.data as VideoAssetReadyWebhookEvent["data"];
+      // playback id only exist when video is ready(video.asset.ready)
+      const playbackId = data.playback_ids?.[0].id;
+      console.log(data);
+
+      if (!data.upload_id) {
+        return new Response("No upload id found", { status: 400 });
+      }
+
+      if (!playbackId) {
+        return new Response("Missing playback id", { status: 400 });
+      }
+      // all these informtion will available in mux dashboard
+      const thumbnailUrl = `https://image.mux.com/${playbackId}/thumbnail.png`;
+      const previewUrl = `https://image.mux.com/${playbackId}/animated.gif`;
+      const duration = data.duration ? Math.round(data.duration * 1000) : 0;
+
+      await db
+        .update(videos)
+        .set({
+          muxStatus: data.status,
+          muxPlaybackId: playbackId,
+          muxAssetId: data.id,
+          thumbnailUrl,
+          previewUrl,
+          duration,
+        })
+        .where(eq(videos.muxUploadId, data.upload_id));
+
+      break;
+    }
   }
 
   return new Response("webhook received", { status: 200 }); // always webhook need to return ok status 200

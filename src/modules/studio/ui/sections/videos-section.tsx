@@ -10,12 +10,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DEFAULT_LIMIT } from "@/constants";
+import VideoThumbnail from "@/modules/videos/ui/components/video-thumbnail";
 import { trpc } from "@/trpc/client";
 import { Loader2Icon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import StudioUploadModal from "../components/studio-upload-modal";
 
 function VideosSectionSuspense() {
   // useSuspenseInfiniteQuery() expect 2 arguments 1: is basic input argument defined in input(), 2: getNextPageParams
@@ -60,9 +60,20 @@ function VideosSectionSuspense() {
                   legacyBehavior
                 >
                   <TableRow className="cursor-pointer">
-                    <TableCell className="pl-6">{video.title}</TableCell>
+                    <TableCell className="pl-6">
+                      <div className="flex items-center gap-4">
+                        <div className="relative w-36 shrink-0 aspect-video">
+                          <VideoThumbnail
+                            imageUrl={video.thumbnailUrl}
+                            previewUrl={video.previewUrl}
+                            title={video.title}
+                            duration={video.duration || 0}
+                          />
+                        </div>
+                      </div>
+                    </TableCell>
                     <TableCell>visibility</TableCell>
-                    <TableCell>status</TableCell>
+                    <TableCell>{video.muxStatus}</TableCell>
                     <TableCell>date</TableCell>
                     <TableCell className="text-right">views</TableCell>
                     <TableCell className="text-right">comments</TableCell>

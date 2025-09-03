@@ -46,7 +46,10 @@ function StudioUploadModal() {
         {create.data?.url ? (
           <StudioUploader
             endpoint={create.data?.url}
-            onSuccess={() => setIsOpen(false)}
+            onSuccess={() => {
+              setIsOpen(false);
+              utils.studio.getMany.invalidate();
+            }}
           />
         ) : (
           <Loader2Icon className="animate-spin" />

@@ -1,4 +1,5 @@
 import {
+  integer,
   pgTable,
   text,
   timestamp,
@@ -44,6 +45,9 @@ export const videos = pgTable("videos", {
   muxPlaybackId: text("mux_playback_id").unique(),
   muxTrackId: text("mux_track_id").unique(),
   muxTrackStatus: text("mux_track_status"),
+  thumbnailUrl: text("thumbnail_url"),
+  previewUrl: text("preview_url"),
+  duration: integer("duration"),
   // some of videos are connected to certain category or user while categories are optional and users are requierd
   // each video obj has 3 ids: category id and user id and its own id
   userId: uuid("user_id")
