@@ -14,7 +14,6 @@ function VideoThumbnail({
   title,
   duration,
 }: VideoThumbnailProps) {
-  // console.log(duration);
   return (
     <div className="relative group">
       {/* thumbnail wrapper: we put static image and gif of video if hover on it remove static image and play gif */}
@@ -22,10 +21,14 @@ function VideoThumbnail({
         <Image
           src={imageUrl ?? "/placeholder.svg"} // if imageUrl is null or undefined returns placeholder image
           fill
+          sizes="100%"
+          priority
           alt={`thumbnail of ${title}`}
           className="size-full object-cover group-hover:opacity-0"
         />
         <Image
+          sizes="100%"
+          unoptimized={!!previewUrl}
           src={previewUrl ?? "/placeholder.svg"}
           fill
           alt={`thumbnail of ${title}`}

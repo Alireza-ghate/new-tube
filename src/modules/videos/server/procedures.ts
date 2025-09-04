@@ -15,6 +15,16 @@ export const videosRouter = createTRPCRouter({
       new_asset_settings: {
         mp4_support: "audio-only,capped-1080p",
         playback_policy: ["public"],
+        inputs: [
+          {
+            generated_subtitles: [
+              {
+                language_code: "en",
+                name: "English",
+              },
+            ],
+          },
+        ],
         passthrough: userId, // to know which user created this video or ulpoaded this video(when we upload a video mux bcs of its webhook dosnt know which user uploads the video)
       },
       cors_origin: "*", //in protuction will be my url

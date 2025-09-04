@@ -1,5 +1,6 @@
 import {
   integer,
+  pgEnum,
   pgTable,
   text,
   timestamp,
@@ -35,6 +36,11 @@ export const categories = pgTable(
   (t) => [uniqueIndex("name_idx").on(t.name)] //create index for "name" field in case we wanted to query by name
 );
 
+export const videoVisibility = pgEnum("video_visibility", [
+  "private",
+  "public",
+]);
+
 export const videos = pgTable("videos", {
   id: uuid("id").defaultRandom().primaryKey(),
   title: text("title").notNull(),
@@ -47,8 +53,10 @@ export const videos = pgTable("videos", {
   muxTrackStatus: text("mux_track_status"),
   thumbnailUrl: text("thumbnail_url"),
   previewUrl: text("preview_url"),
-  duration: integer("duration"),
-  // some of videos are connected to certain category or user while categories are optional and users are requierd
+  duration: integer("duration").default(0).notNull(),
+  // duration: integer("duration"),
+  Visibility: videoVisibility("Visibility").default("private").notNull(),
+  // some of videos are connected to certain category or user, while categories are optional and users are requierd
   // each video obj has 3 ids: category id and user id and its own id
   userId: uuid("user_id")
     .references(() => users.id, { onDelete: "cascade" })
