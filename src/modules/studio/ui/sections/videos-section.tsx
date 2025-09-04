@@ -1,6 +1,7 @@
 "use client";
 
 import InfiniteScroll from "@/components/shared/infinite-scroll";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -14,7 +15,7 @@ import { snakeCaseToTitle } from "@/lib/utils";
 import VideoThumbnail from "@/modules/videos/ui/components/video-thumbnail";
 import { trpc } from "@/trpc/client";
 import { format } from "date-fns";
-import { Globe2Icon, Loader2Icon, LockIcon } from "lucide-react";
+import { Globe2Icon, LockIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -102,9 +103,13 @@ function VideosSectionSuspense() {
                     <TableCell className="text-sm truncate">
                       {format(new Date(video.createdAt), "d MMM yyyy")}
                     </TableCell>
-                    <TableCell className="text-right">views</TableCell>
-                    <TableCell className="text-right">comments</TableCell>
-                    <TableCell className="text-right pr-6">likes</TableCell>
+                    <TableCell className="text-right text-sm">views</TableCell>
+                    <TableCell className="text-right text-sm">
+                      comments
+                    </TableCell>
+                    <TableCell className="text-right text-sm pr-6">
+                      likes
+                    </TableCell>
                   </TableRow>
                 </Link>
               ))}
@@ -125,7 +130,7 @@ function VideosSectionSuspense() {
 
 function VideosSection() {
   return (
-    <Suspense fallback={<VideosSectionLoader />}>
+    <Suspense fallback={<VideosSectionSkeleton />}>
       <ErrorBoundary fallback={<p>error..</p>}>
         <VideosSectionSuspense />
       </ErrorBoundary>
@@ -133,12 +138,62 @@ function VideosSection() {
   );
 }
 
-function VideosSectionLoader() {
+function VideosSectionSkeleton() {
   return (
-    <div className="flex flex-col gap-y-2 items-center">
-      <Loader2Icon className="size-10 animate-spin text-gray-300" />
-      <p>Loading table content</p>
-    </div>
+    <>
+      <div className="border-y">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="pl-6 w-[510px]">Video</TableHead>
+              <TableHead>Visibility</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead className="text-right">Views</TableHead>
+              <TableHead className="text-right">Comments</TableHead>
+              <TableHead className="text-right pr-6">Likes</TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {Array.from({ length: DEFAULT_LIMIT }).map((_, index) => (
+              <TableRow key={index}>
+                <TableCell className="pl-6">
+                  <div className="flex items-center gap-x-4">
+                    <Skeleton className="w-36 h-20" />
+                    <div className="flex flex-col overflow-hidden gap-y-2">
+                      <Skeleton className="h-4 w-[100px]" />
+                      <Skeleton className="h-3 w-[150px]" />
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-x-2">
+                    <Skeleton className="size-5" />
+                    <Skeleton className="h-4 w-[70px]" />
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="w-[50px] h-4" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="w-[80px] h-4" />
+                </TableCell>
+                <TableCell className="text-right">
+                  <Skeleton className="w-[50px] h-4 ml-auto" />
+                </TableCell>
+                <TableCell className="text-right">
+                  <Skeleton className="w-[70px] h-4 ml-auto" />
+                </TableCell>
+                <TableCell className="text-right pr-6">
+                  <Skeleton className="w-[40px] h-4 ml-auto" />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 }
 
