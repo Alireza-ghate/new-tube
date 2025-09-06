@@ -13,7 +13,7 @@ function StudioUploadModal() {
   const utils = trpc.useUtils();
   const create = trpc.videos.create.useMutation({
     onSuccess: () => {
-      toast.success("Video successfully created");
+      // toast.success("Video successfully created");
       utils.studio.getMany.invalidate(); // invalidate happens in client component
       setIsOpen(true);
     },
@@ -49,6 +49,7 @@ function StudioUploadModal() {
             onSuccess={() => {
               setIsOpen(false);
               utils.studio.getMany.invalidate();
+              toast.success("Video successfully created");
             }}
           />
         ) : (

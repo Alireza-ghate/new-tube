@@ -1,7 +1,9 @@
-import { videos } from "@/db/schema";
+import { videos, videoUpdateSchema } from "@/db/schema";
 import { db } from "@/index";
 import { mux } from "@/lib/mux";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { TRPCError } from "@trpc/server";
+import { and, eq } from "drizzle-orm";
 
 export const videosRouter = createTRPCRouter({
   // getMany: baseProcedure.query(), // gets all videos
@@ -42,4 +44,25 @@ export const videosRouter = createTRPCRouter({
 
     return { video: video, url: upload.url };
   }), // for return value from this expression we use returning()
+
+  update: protectedProcedure
+    .input(videoUpdateSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { id: userId } = ctx.user;
+
+      if (!input.id) throw new TRPCError({ code: "BAD_REQUEST" });
+      const [updatedVideo] = await db
+        .update(videos)
+        .set({
+          categoryId: input.categoryId,
+          title: input.title,
+          description: input.description,
+          updatedAt: new Date(),
+          // visibility: input.visibility,
+        }) //what fields user can update
+        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
+        .returning(); // only update videos created by currently logged in user()eq(videos.userId, userId)); // only update videos created by currently logged in user
+
+      if (!updatedVideo) throw new TRPCError({ code: "NOT_FOUND" });
+    }),
 });

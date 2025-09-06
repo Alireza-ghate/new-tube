@@ -86,12 +86,12 @@ function VideosSectionSuspense() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center">
-                        {video.Visibility === "private" ? (
+                        {video.visibility === "private" ? (
                           <LockIcon className="size-4 mr-2" />
                         ) : (
                           <Globe2Icon className="size-4 mr-2" />
                         )}
-                        {snakeCaseToTitle(video.Visibility)}
+                        {snakeCaseToTitle(video.visibility)}
                       </div>
                     </TableCell>
                     <TableCell>

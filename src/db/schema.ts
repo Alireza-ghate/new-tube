@@ -8,6 +8,12 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
+import {
+  createInsertSchema,
+  createUpdateSchema,
+  createSelectSchema,
+} from "drizzle-zod";
+
 // create schemas for every tables in database
 // create schema for "users" table
 export const users = pgTable(
@@ -55,7 +61,7 @@ export const videos = pgTable("videos", {
   previewUrl: text("preview_url"),
   duration: integer("duration").default(0).notNull(),
   // duration: integer("duration"),
-  Visibility: videoVisibility("Visibility").default("private").notNull(),
+  visibility: videoVisibility("visibility").default("private").notNull(),
   // some of videos are connected to certain category or user, while categories are optional and users are requierd
   // each video obj has 3 ids: category id and user id and its own id
   userId: uuid("user_id")
@@ -67,3 +73,8 @@ export const videos = pgTable("videos", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const videoInsertSchema = createInsertSchema(videos);
+export const videoUpdateSchema = createUpdateSchema(videos);
+
+export const videoSelectSchema = createSelectSchema(videos);

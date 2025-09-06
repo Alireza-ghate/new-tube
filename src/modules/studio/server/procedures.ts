@@ -3,9 +3,23 @@ import { videos } from "@/db/schema";
 import { db } from "@/index";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { and, desc, eq, lt, or } from "drizzle-orm";
+import { TRPCError } from "@trpc/server";
 
 export const studioRouter = createTRPCRouter({
   // we use protectedProcedure bcs /studio is a p>rotected route
+  getOne: protectedProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .query(async ({ ctx, input }) => {
+      const { id: userId } = ctx.user;
+      const { id } = input; // same id we pass as argument in prefetch()
+      const [video] = await db
+        .select()
+        .from(videos)
+        .where(and(eq(videos.id, id), eq(videos.userId, userId))); // id which inside url(we get it from url and put it as argument) must be eq to video.id // each video has userId it must also be eq to userId(id current user)
+
+      if (!video) throw new TRPCError({ code: "NOT_FOUND" });
+      return video;
+    }),
   // if useSuspenseInfiniteQuery() dosnt show up we use input()
   getMany: protectedProcedure
     .input(
