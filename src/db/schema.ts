@@ -61,7 +61,10 @@ export const videos = pgTable("videos", {
   previewUrl: text("preview_url"),
   duration: integer("duration").default(0).notNull(),
   // duration: integer("duration"),
-  visibility: videoVisibility("visibility").default("private").notNull(),
+  visibility: videoVisibility("visibility")
+    .default("private")
+    .notNull()
+    .$type<"private" | "public">(), //$type<"private" | "public">() means that this field will be of type "private" or "public" bcs if we dont do this it will be also type 2 as number
   // some of videos are connected to certain category or user, while categories are optional and users are requierd
   // each video obj has 3 ids: category id and user id and its own id
   userId: uuid("user_id")
@@ -76,5 +79,4 @@ export const videos = pgTable("videos", {
 
 export const videoInsertSchema = createInsertSchema(videos);
 export const videoUpdateSchema = createUpdateSchema(videos);
-
 export const videoSelectSchema = createSelectSchema(videos);

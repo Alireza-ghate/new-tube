@@ -58,7 +58,7 @@ export const videosRouter = createTRPCRouter({
           title: input.title,
           description: input.description,
           updatedAt: new Date(),
-          // visibility: input.visibility,
+          visibility: input.visibility as "private" | "public",
         }) //what fields user can update
         .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
         .returning(); // only update videos created by currently logged in user()eq(videos.userId, userId)); // only update videos created by currently logged in user
