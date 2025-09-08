@@ -4,6 +4,7 @@ import { mux } from "@/lib/mux";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
+import z from "zod";
 
 export const videosRouter = createTRPCRouter({
   // getMany: baseProcedure.query(), // gets all videos
@@ -61,8 +62,26 @@ export const videosRouter = createTRPCRouter({
           visibility: input.visibility as "private" | "public",
         }) //what fields user can update
         .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
-        .returning(); // only update videos created by currently logged in user()eq(videos.userId, userId)); // only update videos created by currently logged in user
+        .returning(); //eq(videos.userId, userId)); // only update videos created by currently logged in user
 
       if (!updatedVideo) throw new TRPCError({ code: "NOT_FOUND" });
+
+      return updatedVideo;
+    }),
+
+  remove: protectedProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id: userId } = ctx.user;
+      const { id } = input; //id === video.id (we pass as argument)
+
+      const [removedVideo] = await db
+        .delete(videos)
+        .where(and(eq(videos.id, id), eq(videos.userId, userId)))
+        .returning(); // user can only delets its own video and only delete that video currently looking at
+
+      if (!removedVideo) throw new TRPCError({ code: "NOT_FOUND" });
+
+      return removedVideo;
     }),
 });

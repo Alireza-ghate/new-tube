@@ -38,6 +38,7 @@ import {
   TrashIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useForm } from "react-hook-form";
@@ -51,6 +52,7 @@ function FormSectionSuspense({ videoId }: FormSectionProps) {
   // instead of passing videoId as props, we could use useParams() or Use() directly in client component to get params from url
   // whenever we use useSuspenseQury() to read data from data cache for multiple data, suspense loader will waits for all data to be ready
   // if video is not ready but categires is already ready suspense loader will still show loading state
+  const router = useRouter();
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const utils = trpc.useUtils();
   const [video] = trpc.studio.getOne.useSuspenseQuery({ id: videoId });
@@ -63,13 +65,24 @@ function FormSectionSuspense({ videoId }: FormSectionProps) {
     },
     onError: () => {
       // toast.error(error.message);
-      toast.error("Something went wrong");
+      toast.error("Something went wrong: failed to update video");
     },
   });
 
   const form = useForm<z.infer<typeof videoUpdateSchema>>({
     resolver: zodResolver(videoUpdateSchema),
     defaultValues: video,
+  });
+
+  const remove = trpc.videos.remove.useMutation({
+    onSuccess: () => {
+      toast.success("Video successfully deleted");
+      router.push("/studio");
+      utils.studio.getMany.invalidate();
+    },
+    onError: () => {
+      toast.error("Something went wrong: failed to delete video");
+    },
   });
 
   //onSubmit event handler fn only executes when validation is pass(all inputs correctly filled)
@@ -117,7 +130,9 @@ function FormSectionSuspense({ videoId }: FormSectionProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => remove.mutate({ id: videoId })}
+                >
                   <TrashIcon className="size-4 mr-2 text-red-700" />
                   Delete
                 </DropdownMenuItem>
