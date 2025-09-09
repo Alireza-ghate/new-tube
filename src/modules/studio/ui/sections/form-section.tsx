@@ -93,6 +93,17 @@ function FormSectionSuspense({ videoId }: FormSectionProps) {
     },
   });
 
+  const restoreThumbnail = trpc.videos.restoreThumbnail.useMutation({
+    onSuccess: () => {
+      toast.success("Thumbnail successfully restored");
+      utils.studio.getOne.invalidate({ id: videoId });
+      utils.studio.getMany.invalidate();
+    },
+    onError: () => {
+      toast.error("Something went wrong: failed to restore thumbnail");
+    },
+  });
+
   //onSubmit event handler fn only executes when validation is pass(all inputs correctly filled)
   // calling onSumbit() acyncrounously makes formState availbale which contains isSubmitting and other states form.formState
   // BUT calling onSubmit() synchronously, formState is not available instead we use update.isPending
@@ -232,7 +243,11 @@ function FormSectionSuspense({ videoId }: FormSectionProps) {
                               <SparklesIcon className="size-4 mr-1" />
                               AI-generated
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                restoreThumbnail.mutate({ id: videoId })
+                              }
+                            >
                               <RotateCcwIcon className="size-4 mr-1" />
                               Restore
                             </DropdownMenuItem>

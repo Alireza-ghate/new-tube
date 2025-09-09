@@ -84,4 +84,33 @@ export const videosRouter = createTRPCRouter({
 
       return removedVideo;
     }),
+
+  restoreThumbnail: protectedProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id: userId } = ctx.user;
+      // based on videoId we passed into procedure, we want to get that video associated with that videoId
+      // after get video object based on that videoId we want to get its muxPlaybackId and use it to create new thumbnailUrl
+      // then we want to update that video object with new thumbnailUrl
+      const [existingVideo] = await db
+        .select()
+        .from(videos)
+        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
+
+      if (!existingVideo) throw new TRPCError({ code: "NOT_FOUND" });
+      if (!existingVideo.muxPlaybackId)
+        throw new TRPCError({ code: "BAD_REQUEST" });
+
+      const thumbnailUrl = `https://image.mux.com/${existingVideo.muxPlaybackId}/thumbnail.png`;
+
+      const [updatedVideo] = await db
+        .update(videos)
+        .set({ thumbnailUrl })
+        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
+        .returning();
+
+      if (!updatedVideo) throw new TRPCError({ code: "NOT_FOUND" });
+
+      return updatedVideo;
+    }),
 });
