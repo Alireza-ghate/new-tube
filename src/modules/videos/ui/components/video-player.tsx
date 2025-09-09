@@ -1,4 +1,5 @@
 import MuxPlayer from "@mux/mux-player-react";
+import { THUMBNAIL_FALLBACK } from "../../constants";
 
 interface VideoPlayerProps {
   playbackId?: string | null | undefined;
@@ -21,7 +22,7 @@ function VideoPlayer({
       playbackId={playbackId || ""} //whenever we upload a video we have playbackId
       autoPlay={autoPlay}
       onPlay={onPlay}
-      poster={thumbnailUrl || "/placeholder.svg"} //if there is no video uploaded by user, there is also no thumbnailUrl
+      poster={thumbnailUrl || THUMBNAIL_FALLBACK} //if there is no video uploaded by user, there is also no thumbnailUrl
       playerInitTime={0} // helps with hydration
       thumbnailTime={0}
       accentColor="#FF2056"

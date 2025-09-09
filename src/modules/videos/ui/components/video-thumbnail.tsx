@@ -1,5 +1,6 @@
 import { formatDuration } from "@/lib/utils";
 import Image from "next/image";
+import { THUMBNAIL_FALLBACK } from "../../constants";
 
 interface VideoThumbnailProps {
   imageUrl?: string | null;
@@ -19,7 +20,7 @@ function VideoThumbnail({
       {/* thumbnail wrapper: we put static image and gif of video if hover on it remove static image and play gif */}
       <div className="relative w-full overflow-hidden rounded-xl aspect-video">
         <Image
-          src={imageUrl ?? "/placeholder.svg"} // if imageUrl is null or undefined returns placeholder image
+          src={imageUrl ?? THUMBNAIL_FALLBACK} // if imageUrl is null or undefined returns placeholder image
           fill
           sizes="100%"
           priority
@@ -29,7 +30,7 @@ function VideoThumbnail({
         <Image
           sizes="100%"
           unoptimized={!!previewUrl}
-          src={previewUrl ?? "/placeholder.svg"}
+          src={previewUrl ?? THUMBNAIL_FALLBACK}
           fill
           alt={`thumbnail of ${title}`}
           className="size-full object-cover opacity-0 group-hover:opacity-100"
