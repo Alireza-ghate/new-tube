@@ -6,7 +6,7 @@ import AuthButton from "@/modules/auth/ui/components/auth-button";
 
 function HomeNavbar() {
   return (
-    <nav className="fixed top-0 left-0 right-0 h-16 px-2 pr-5 z-50">
+    <nav className="fixed top-0 left-0 right-0 h-16 px-2 pr-5 z-50 bg-white">
       {/* navbar content goes here (container) */}
       <div className="flex items-center gap-x-4">
         {/* Menu and Logo */}

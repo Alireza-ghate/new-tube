@@ -46,7 +46,7 @@ export const ourFileRouter = {
         .where(and(eq(videos.id, input.videoId), eq(videos.userId, user.id)));
 
       if (!existingVideo) throw new UploadThingError("Not found");
-      // before uploading new image we want to delete old one cleanup
+      // before uploading new image we want to delete old one cleanup old files
       if (existingVideo.thumbnailKey) {
         const utapi = new UTApi();
         await utapi.deleteFiles(existingVideo.thumbnailKey);

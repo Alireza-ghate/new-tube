@@ -39,7 +39,6 @@ import {
   LockIcon,
   MoreVerticalIcon,
   RotateCcwIcon,
-  SparklesIcon,
   TrashIcon,
 } from "lucide-react";
 import Image from "next/image";
@@ -146,7 +145,10 @@ function FormSectionSuspense({ videoId }: FormSectionProps) {
               </p>
             </div>
             <div className="flex gap-x-2 items-center">
-              <Button type="submit" disabled={update.isPending}>
+              <Button
+                type="submit"
+                disabled={update.isPending || !form.formState.isDirty} // disable button if user didnt change anything in form
+              >
                 Save
               </Button>
               <DropdownMenu>
@@ -239,10 +241,10 @@ function FormSectionSuspense({ videoId }: FormSectionProps) {
                               <ImagePlusIcon className="size-4 mr-1" />
                               Change
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            {/* <DropdownMenuItem>
                               <SparklesIcon className="size-4 mr-1" />
                               AI-generated
-                            </DropdownMenuItem>
+                            </DropdownMenuItem> */}
                             <DropdownMenuItem
                               onClick={() =>
                                 restoreThumbnail.mutate({ id: videoId })
@@ -410,13 +412,63 @@ function FormSectionSkeleton() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6 mt-2">
-        <div className="flex flex-col gap-y-2">
-          <Skeleton className="h-8 w-[153px]" />
-          <Skeleton className="h-4 w-[153px]" />
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-[153px]" />
+          <Skeleton className="h-3 w-[153px]" />
         </div>
         <div className="flex gap-x-2 items-center">
-          <Skeleton className="h-9 w-16" />
-          <Skeleton className="size-9" />
+          <Skeleton className="h-7 w-10" />
+          <Skeleton className="size-7" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        {/* column 1 */}
+        <div className="space-y-8 lg:col-span-3">
+          <div className="space-y-3">
+            <Skeleton className="h-5 w-[70px]" />
+            <Skeleton className="h-8 w-full" />
+          </div>
+          <div className="space-y-3">
+            <Skeleton className="h-5 w-[70px]" />
+            <Skeleton className="h-48 w-full" />
+          </div>
+          <div className="space-y-3">
+            <Skeleton className="h-5 w-[70px]" />
+            <Skeleton className="h-[84px] w-[153px]" />
+          </div>
+          <div className="space-y-3">
+            <Skeleton className="h-5 w-[70px]" />
+            <Skeleton className="h-8 w-full" />
+          </div>
+        </div>
+
+        {/* column 2 */}
+        <div className="lg:col-span-2 flex flex-col gap-y-8">
+          <div className="flex flex-col gap-y-4 overflow-hidden h-fit bg-[#f9f9f9] rounded-xl">
+            <div className="aspect-video overflow-hidden relative">
+              <Skeleton className="aspect-video" />
+            </div>
+            <div className="p-4 flex flex-col gap-y-6">
+              <div className="space-y-3">
+                <Skeleton className="h-4 w-[70px]" />
+                <Skeleton className="h-6 w-full" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[70px]" />
+                <Skeleton className="h-4 w-[100px]" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[70px]" />
+                <Skeleton className="h-4 w-[100px]" />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Skeleton className="h-4 w-[70px]" />
+            <Skeleton className="h-6 w-full" />
+          </div>
         </div>
       </div>
     </div>
