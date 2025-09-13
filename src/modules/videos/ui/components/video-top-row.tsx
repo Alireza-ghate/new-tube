@@ -12,13 +12,23 @@ interface VideoTopRowProps {
 
 function VideoTopRow({ video }: VideoTopRowProps) {
   // we use useMemo() to memoize the function evry time we render the component to avoid unnecessary re-calculations
-  const compactViews = useMemo(function compactViews() {
-    return Intl.NumberFormat("en-US", { notation: "compact" }).format(1500); //1500 is mock data
-  }, []);
+  const compactViews = useMemo(
+    function compactViews() {
+      return Intl.NumberFormat("en-US", { notation: "compact" }).format(
+        video.viewCount
+      );
+    },
+    [video.viewCount]
+  );
 
-  const expandedViews = useMemo(function expandedViews() {
-    return Intl.NumberFormat("en-US", { notation: "standard" }).format(1500); //1500 is mock data
-  }, []);
+  const expandedViews = useMemo(
+    function expandedViews() {
+      return Intl.NumberFormat("en-US", { notation: "standard" }).format(
+        video.viewCount
+      );
+    },
+    [video.viewCount]
+  );
 
   const compactDate = useMemo(
     function compactDate() {

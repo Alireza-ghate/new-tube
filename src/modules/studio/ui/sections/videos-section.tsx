@@ -157,7 +157,7 @@ function VideosSectionSkeleton() {
 
           <TableBody>
             {Array.from({ length: DEFAULT_LIMIT }).map((_, index) => (
-              <TableRow key={index}>
+              <TableRow key={index} className="hover:bg-transparent">
                 <TableCell className="pl-6">
                   <div className="flex items-center gap-x-4">
                     <Skeleton className="w-36 h-20" />
