@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import VideoBanner from "../components/video-banner";
 import VideoTopRow from "../components/video-top-row";
 import { useAuth } from "@clerk/nextjs";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface VideoSectionProps {
   videoId: string;
@@ -56,7 +57,46 @@ function VideoSectionSuspense({ videoId }: VideoSectionProps) {
 }
 
 function VideoSectionSkeleton() {
-  return <p>Loading...</p>;
+  return (
+    <>
+      <div className="aspect-video relative rounded-xl overflow-hidden">
+        <Skeleton className="w-full h-full" />
+      </div>
+      <div className="flex flex-col gap-4 mt-4">
+        <Skeleton className="h-6 w-[250px]" />
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          {/* videoowner */}
+          <div className="flex items-center justify-between sm:items-start sm:justify-start gap-3 min-w-0">
+            <div className="flex items-center gap-3 min-w-0">
+              <Skeleton className="size-10 rounded-full" />
+              <div className="flex flex-col gap-y-1 min-w-0">
+                <Skeleton className="h-3 w-[140px]" />
+                <Skeleton className="h-3 w-[100px]" />
+              </div>
+              <Skeleton className="w-[80px] h-[30px] rounded-full" />
+            </div>
+          </div>
+          {/* VideoReactions */}
+          <div className="flex overflow-x-auto sm:min-w-[calc(50%-6px)] sm:justify-end sm:overflow-visible pb-2 -mb-2 sm:pb-0 sm:mb-0 gap-2">
+            <Skeleton className="w-[100px] h-[35px] rounded-full" />
+            <Skeleton className="size-9 rounded-full" />
+          </div>
+        </div>
+        {/* VideoDescription */}
+        <div className="bg-secondary/50 rounded-xl p-3">
+          <div className="flex gap-2 mb-2 text-sm">
+            <Skeleton className="w-[50px] h-5 rounded-full" />
+            <Skeleton className="w-[100px] h-5 rounded-full" />
+          </div>
+          <div className="flex flex-col gap-y-3">
+            <Skeleton className="w-full h-5 rounded-full" />
+            <Skeleton className="w-3/5 h-5 rounded-full" />
+            <Skeleton className="w-1/2 h-5 rounded-full" />
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default VideoSection;

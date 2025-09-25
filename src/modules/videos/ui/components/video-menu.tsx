@@ -5,7 +5,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { on } from "events";
 import {
   ListPlusIcon,
   MoreVerticalIcon,
@@ -45,7 +44,7 @@ function VideoMenu({ videoId, onRemove, variant }: VideoMenuProps) {
           <span>Add to playlist</span>
         </DropdownMenuItem>
         {onRemove && (
-          <DropdownMenuItem onClick={() => {}}>
+          <DropdownMenuItem onClick={onRemove}>
             <Trash2Icon className="mr-2 size-4" />
             <span>Remove</span>
           </DropdownMenuItem>
