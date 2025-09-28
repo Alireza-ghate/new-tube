@@ -31,6 +31,7 @@ function VideoReactions({
       }
     },
   });
+  console.log("videoReaction: ", viewerReaction);
 
   const like = trpc.videoReactions.like.useMutation({
     onSuccess: () => utils.videos.getOne.invalidate({ id: videoId }),
@@ -63,6 +64,7 @@ function VideoReactions({
         className="pl-3 rounded-l-none rounded-r-full"
       >
         <ThumbsDownIcon
+          fill="currentColor"
           className={cn("size-5", viewerReaction === "dislike" && "fill-black")}
         />
         {dislikes}

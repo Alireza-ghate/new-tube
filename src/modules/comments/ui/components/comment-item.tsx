@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { CommentsGetManyOutput } from "../../types";
 import CommentForm from "./comment-form";
 import { useAuth, useClerk } from "@clerk/nextjs";
+import CommentReactions from "./comment-reactions";
 
 interface CommentItemProps {
   comment: CommentsGetManyOutput["items"][number];
@@ -76,13 +77,12 @@ function CommentItem({ comment }: CommentItemProps) {
             </div>
           </Link>
           <p className="text-sm ">{comment.value}</p>
-          {/* todo: reactins */}
-
+          <CommentReactions comment={comment} />
           {isOpen ? <CommentForm videoId={comment.videoId} /> : null}
         </div>
         {/* delete btn */}
         {/* only deletes comments that logged in user created */}
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="size-8">
               <MoreVerticalIcon />
