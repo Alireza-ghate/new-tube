@@ -56,7 +56,7 @@ function VideoTopRow({ video }: VideoTopRowProps) {
             videoId={video.id}
             likes={video.likeCount}
             dislikes={video.dislikeCount}
-            viewerReaction={video.viewerReactions}
+            viewerReactions={video.viewerReactions}
           />
           <VideoMenu videoId={video.id} variant="secondary" />
         </div>

@@ -37,38 +37,36 @@ function CommentReactions({ comment }: CommentReactionsProps) {
     },
   });
   return (
-    <div className="flex items-center gap-2 mt-1">
-      <div className="flex items-center">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-8"
-          disabled={like.isPending || dislike.isPending}
-          onClick={() => like.mutate({ commentId: comment.id })}
-        >
-          <ThumbsUpIcon
-            className={cn(comment.viewerReaction === "like" && "fill-black")}
-          />
-        </Button>
-        <span className="text-xs text-muted-foreground mx-0.5">
-          {comment.likeCount}
-        </span>
+    <div className="flex items-center">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="size-8"
+        disabled={like.isPending || dislike.isPending}
+        onClick={() => like.mutate({ commentId: comment.id })}
+      >
+        <ThumbsUpIcon
+          className={cn(comment.viewerReaction === "like" && "fill-black")}
+        />
+      </Button>
+      <span className="text-xs text-muted-foreground mx-0.5">
+        {comment.likeCount}
+      </span>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-8"
-          disabled={dislike.isPending || like.isPending}
-          onClick={() => dislike.mutate({ commentId: comment.id })}
-        >
-          <ThumbsDownIcon
-            className={cn(comment.viewerReaction === "dislike" && "fill-black")}
-          />
-        </Button>
-        <span className="text-xs text-muted-foreground mx-0.5">
-          {comment.dislikeCount}
-        </span>
-      </div>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="size-8"
+        disabled={dislike.isPending || like.isPending}
+        onClick={() => dislike.mutate({ commentId: comment.id })}
+      >
+        <ThumbsDownIcon
+          className={cn(comment.viewerReaction === "dislike" && "fill-black")}
+        />
+      </Button>
+      <span className="text-xs text-muted-foreground mx-0.5">
+        {comment.dislikeCount}
+      </span>
     </div>
   );
 }

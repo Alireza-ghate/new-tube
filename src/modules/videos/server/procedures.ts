@@ -70,21 +70,22 @@ export const videosRouter = createTRPCRouter({
           // we combine viewCount into video too, bcs video section also needs number of views
           viewCount: db.$count(videoViews, eq(videoViews.videoId, videos.id)),
           // we combine like and dislike count into video{} too
+
+          viewerReactions: viewerReactions.type,
           likeCount: db.$count(
             videoReactions,
             and(
-              eq(videoReactions.videoId, videos.id),
-              eq(videoReactions.type, "like")
+              eq(videoReactions.type, "like"),
+              eq(videoReactions.videoId, videos.id)
             )
           ),
           dislikeCount: db.$count(
             videoReactions,
             and(
-              eq(videoReactions.videoId, videos.id),
-              eq(videoReactions.type, "dislike")
+              eq(videoReactions.type, "dislike"),
+              eq(videoReactions.videoId, videos.id)
             )
           ),
-          viewerReactions: viewerReactions.type,
         })
         .from(videos)
         .innerJoin(users, eq(videos.userId, users.id))

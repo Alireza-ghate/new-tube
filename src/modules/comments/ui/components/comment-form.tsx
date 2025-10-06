@@ -18,11 +18,20 @@ import z from "zod";
 
 interface CommentFormProps {
   videoId: string;
+  parentId?: string;
   onSuccess?: () => void;
+  onCancel?: () => void;
+  variant?: "reply" | "comment";
 }
 
-function CommentForm({ videoId, onSuccess }: CommentFormProps) {
-  const { user, isLoaded } = useUser();
+function CommentForm({
+  videoId,
+  onSuccess,
+  onCancel,
+  parentId,
+  variant = "comment",
+}: CommentFormProps) {
+  const { user } = useUser();
   const clerk = useClerk();
   const utils = trpc.useUtils();
 
@@ -30,6 +39,7 @@ function CommentForm({ videoId, onSuccess }: CommentFormProps) {
     onSuccess: () => {
       toast.success("Comment added");
       utils.comments.getMany.invalidate({ videoId });
+      utils.comments.getMany.invalidate({ videoId, parentId });
       form.reset();
       onSuccess?.();
     },
@@ -46,12 +56,18 @@ function CommentForm({ videoId, onSuccess }: CommentFormProps) {
     defaultValues: {
       videoId,
       value: "",
+      parentId,
     },
   });
 
   function handleSubmit(values: z.infer<typeof commentInsertSchema>) {
     if (values.value.trim() === "") return; //if user dont write anything in textarea dont do anything
     create.mutate(values);
+  }
+
+  function handleCancel() {
+    form.reset();
+    onCancel?.();
   }
 
   return (
@@ -63,7 +79,7 @@ function CommentForm({ videoId, onSuccess }: CommentFormProps) {
         <UserAvatar
           imageUrl={user?.imageUrl || "/user_default_avatar.png"}
           name={user?.username || "user"}
-          size="lg"
+          size={variant === "reply" ? "sm" : "lg"}
         />
         <div className="flex-1">
           <FormField
@@ -74,7 +90,11 @@ function CommentForm({ videoId, onSuccess }: CommentFormProps) {
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="Write a comment..."
+                    placeholder={
+                      variant === "reply"
+                        ? "Reply to this comment..."
+                        : "Write a comment..."
+                    }
                     className="resize-none min-h-0 overflow-hidden bg-transparent"
                   />
                 </FormControl>
@@ -84,12 +104,17 @@ function CommentForm({ videoId, onSuccess }: CommentFormProps) {
           />
 
           <div className="flex gap-2 mt-2 justify-end">
+            {onCancel && (
+              <Button onClick={handleCancel} variant="ghost" type="button">
+                Cancel
+              </Button>
+            )}
             <Button
               disabled={create.isPending || !form.formState.isDirty}
               type="submit"
               size="sm"
             >
-              Comment
+              {variant === "reply" ? "Reply" : "Comment"}
             </Button>
           </div>
         </div>

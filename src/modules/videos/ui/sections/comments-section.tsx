@@ -38,7 +38,7 @@ function CommentsSectionSuspense({ videoId }: CommentsSectionProps) {
   );
 
   const loginBlock = (
-    <div className="flex flex-col items-center gap-y-2">
+    <div className="flex flex-col items-center gap-y-2 bg-secondary/50 hover:bg-secondary/70 px-2 py-6 rounded-xl">
       <p className="text-sm font-medium italic">
         in order to add comment, please login
       </p>
@@ -79,20 +79,32 @@ function CommentsSectionSuspense({ videoId }: CommentsSectionProps) {
         ) : (
           loginBlock
         )}
-
-        <div className="flex flex-col gap-y-4 mt-2">
-          {comments.pages
-            .flatMap((page) => page.items)
-            .map((comment) => (
-              <CommentItem key={comment.id} comment={comment} />
-            ))}
-          <InfiniteScroll
-            fetchNextPage={query.fetchNextPage}
-            hasNextPage={query.hasNextPage}
-            isFetchingNextPage={query.isFetchingNextPage}
-            isManual={true}
-          />
-        </div>
+        {/* if there is no comments say no comments */}
+        {comments.pages[0].totalCount !== 0 ? (
+          <div className="flex flex-col gap-y-4 mt-2">
+            {comments.pages
+              .flatMap((page) => page.items)
+              .map((comment) => (
+                <CommentItem
+                  key={comment.id}
+                  comment={comment}
+                  variant="comment"
+                />
+              ))}
+            <InfiniteScroll
+              fetchNextPage={query.fetchNextPage}
+              hasNextPage={query.hasNextPage}
+              isFetchingNextPage={query.isFetchingNextPage}
+              isManual={true}
+            />
+          </div>
+        ) : (
+          <div className="bg-secondary/50 p-4 rounded-xl">
+            <p className="text-sm text-muted-foreground text-center">
+              No comments
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

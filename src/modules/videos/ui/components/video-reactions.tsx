@@ -10,13 +10,13 @@ interface VideoReactionsProps {
   videoId: string;
   likes: number;
   dislikes: number;
-  viewerReaction: "like" | "dislike" | null;
+  viewerReactions: "like" | "dislike" | null;
 }
 
 function VideoReactions({
   dislikes,
   likes,
-  viewerReaction,
+  viewerReactions,
   videoId,
 }: VideoReactionsProps) {
   const utils = trpc.useUtils();
@@ -31,7 +31,7 @@ function VideoReactions({
       }
     },
   });
-  console.log("videoReaction: ", viewerReaction);
+  console.log("videoReaction: ", viewerReactions);
 
   const like = trpc.videoReactions.like.useMutation({
     onSuccess: () => utils.videos.getOne.invalidate({ id: videoId }),
@@ -52,7 +52,7 @@ function VideoReactions({
         className="pr-4 gap-2 rounded-l-full rounded-r-none"
       >
         <ThumbsUpIcon
-          className={cn("size-5", viewerReaction === "like" && "fill-black")}
+          className={cn("size-5", viewerReactions === "like" && "fill-black")}
         />
         {likes}
       </Button>
@@ -64,8 +64,10 @@ function VideoReactions({
         className="pl-3 rounded-l-none rounded-r-full"
       >
         <ThumbsDownIcon
-          fill="currentColor"
-          className={cn("size-5", viewerReaction === "dislike" && "fill-black")}
+          className={cn(
+            "size-5",
+            viewerReactions === "dislike" && "fill-black"
+          )}
         />
         {dislikes}
       </Button>
