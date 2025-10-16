@@ -108,7 +108,7 @@ function VideosSectionSuspense() {
                       comments
                     </TableCell>
                     <TableCell className="text-right text-sm pr-6">
-                      likes
+                      {}
                     </TableCell>
                   </TableRow>
                 </Link>

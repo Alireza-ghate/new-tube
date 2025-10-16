@@ -5,6 +5,7 @@ import Link from "next/link";
 import UserAvatar from "@/components/shared/user-avatar";
 import UserInfo from "@/modules/users/ui/components/user-info";
 import VideoMenu from "./video-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface VideoInfoProps {
   data: VideoGetManyOutput["items"][number];
@@ -20,6 +21,7 @@ function VideoInfo({ data, onRemove }: VideoInfoProps) {
   const compactDate = useMemo(() => {
     return formatDistanceToNow(data.createdAt, { addSuffix: true });
   }, [data.createdAt]);
+
   return (
     <div className="flex gap-3">
       <Link href={`/users/${data.user.id}`}>
@@ -43,6 +45,23 @@ function VideoInfo({ data, onRemove }: VideoInfoProps) {
 
       <div className="flex-shrink-0">
         <VideoMenu videoId={data.id} onRemove={onRemove} />
+      </div>
+    </div>
+  );
+}
+
+export function VideoInfoSkeleton() {
+  return (
+    <div className="flex gap-3">
+      <Skeleton className="size-10 shrink-0 rounded-full" />
+
+      <div className="min-w-0 flex-1 space-y-2">
+        <Skeleton className="w-[90%] h-5" />
+        <Skeleton className="w-[70%] h-5" />
+      </div>
+
+      <div className="flex-shrink-0">
+        <Skeleton className="size-3 rounded-full" />
       </div>
     </div>
   );
