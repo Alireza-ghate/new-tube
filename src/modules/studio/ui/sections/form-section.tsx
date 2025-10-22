@@ -50,6 +50,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 import ThumbnailUploadModal from "../components/thumbnail-upload-modal";
+import { APP_URL } from "@/constants";
 
 interface FormSectionProps {
   videoId: string;
@@ -123,9 +124,7 @@ function FormSectionSuspense({ videoId }: FormSectionProps) {
     setTimeout(() => setIsCopied(false), 2000);
   }
 
-  const fullUrl = `${
-    process.env.VERCEL_URL || "http://localhost:3000"
-  }/videos/${videoId}`;
+  const fullUrl = `${APP_URL || "http://localhost:3000"}/videos/${videoId}`;
 
   return (
     <>

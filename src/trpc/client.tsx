@@ -8,6 +8,7 @@ import { useState } from "react";
 import { makeQueryClient } from "./query-client";
 import type { AppRouter } from "./routers/_app";
 import Superjson from "superjson";
+import { APP_URL } from "@/constants";
 export const trpc = createTRPCReact<AppRouter>();
 let clientQueryClientSingleton: QueryClient;
 function getQueryClient() {
@@ -23,7 +24,8 @@ function getUrl() {
     if (typeof window !== "undefined") return "";
     ///// for when we want to deploy our app on vercel BUT when we want deploy our app on some other platform:
     // we create NEXT_PUPLIC_BASE_URL in .env.local and save our app url in it and use it here
-    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+    if (APP_URL) return `https://${APP_URL}`;
+
     return "http://localhost:3000";
   })();
   return `${base}/api/trpc`;
