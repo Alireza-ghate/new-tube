@@ -3,23 +3,26 @@
 import { Button } from "@/components/ui/button";
 import { APP_URL } from "@/constants";
 import { SearchIcon, XIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 function SearchInput() {
-  const [value, setValue] = useState("");
+  const searchParams = useSearchParams();
+  const query = searchParams.get("query") || "";
+  const categoryId = searchParams.get("categoryId") || "";
+  const [value, setValue] = useState(query);
   const router = useRouter();
+  // in client components we can get search queries from useSearchParams hook
 
   function handleSearch(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     // as soon as user wrote a character in the input, redirect user to a place for showing result
-    const url = new URL(
-      "/search",
-      APP_URL ? `https://${APP_URL}` : "http://localhost:3000" //if we havent deploy project on vercel, show us localhost
-    );
+    const url = new URL("/search", APP_URL);
 
     const newQuery = value.trim();
     url.searchParams.set("query", encodeURIComponent(newQuery)); //inside my url make a searchQuery name "query" and encoded it
+
+    if (categoryId) url.searchParams.set("categoryId", categoryId);
 
     if (newQuery === "") {
       url.searchParams.delete("query"); //if user didnt write anything, delete query from URL

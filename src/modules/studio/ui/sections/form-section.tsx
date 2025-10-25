@@ -124,7 +124,7 @@ function FormSectionSuspense({ videoId }: FormSectionProps) {
     setTimeout(() => setIsCopied(false), 2000);
   }
 
-  const fullUrl = `${APP_URL || "http://localhost:3000"}/videos/${videoId}`;
+  const fullUrl = `${APP_URL}/videos/${videoId}`;
 
   return (
     <>

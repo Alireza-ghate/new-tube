@@ -6,6 +6,8 @@ interface LayoutProps {
   children: ReactNode; // we use ReactNod when we want children be evrything like strings, numbers, jsx or array of these and ...
 }
 
+export const dynamic = "force-dynamic";
+
 // evry content(JSX) returned from any co-located page.tsx will be replace with children prop
 // everything this nested layout will return, will be children prop inside RootLayout(layout.tsx in app folder)
 function Layout({ children }: LayoutProps) {

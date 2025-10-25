@@ -23,10 +23,8 @@ function getUrl() {
   const base = (() => {
     if (typeof window !== "undefined") return "";
     ///// for when we want to deploy our app on vercel BUT when we want deploy our app on some other platform:
-    // we create NEXT_PUPLIC_BASE_URL in .env.local and save our app url in it and use it here
-    if (APP_URL) return `https://${APP_URL}`;
 
-    return "http://localhost:3000";
+    return APP_URL;
   })();
   return `${base}/api/trpc`;
 }

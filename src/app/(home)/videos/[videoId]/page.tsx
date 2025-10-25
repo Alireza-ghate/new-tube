@@ -2,6 +2,7 @@ import { DEFAULT_LIMIT } from "@/constants";
 import VideoView from "@/modules/videos/ui/views/video-view";
 import { HydrateClient, trpc } from "@/trpc/server";
 
+//make this page dynamic bcs in production when we build our project , nextJs will consider every single page that has this pre-fetch data strutcure as STATIC page
 export const dynamic = "force-dynamic";
 
 interface VideoPageProps {
