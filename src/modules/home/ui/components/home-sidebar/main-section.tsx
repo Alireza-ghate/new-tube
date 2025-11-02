@@ -20,8 +20,8 @@ const items = [
     icon: HomeIcon,
   },
   {
-    title: "Subscriptions",
-    url: "/feed/subscriptions",
+    title: "Subscribed",
+    url: "/feed/subscribed",
     icon: PlaySquareIcon,
     auth: true, // depends on user is logged in or not. this item (Subscriptions) will only be rendered if the user is authenticated
   },

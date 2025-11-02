@@ -14,12 +14,242 @@ import {
   protectedProcedure,
 } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-import { and, eq, getTableColumns, inArray, isNotNull } from "drizzle-orm";
+import {
+  and,
+  desc,
+  eq,
+  getTableColumns,
+  inArray,
+  isNotNull,
+  lt,
+  or,
+} from "drizzle-orm";
+import { view } from "drizzle-orm/sqlite-core";
+
 import { UTApi } from "uploadthing/server";
 import z from "zod";
 
 export const videosRouter = createTRPCRouter({
-  // getMany: baseProcedure.query(), // gets all videos
+  getMany: baseProcedure
+    .input(
+      z.object({
+        categoryId: z.string().uuid().nullish(),
+        cursor: z
+          .object({
+            id: z.string().uuid(),
+            updatedAt: z.date(),
+          })
+          .nullish(), //means cursor is optional
+        limit: z.number().min(1).max(100),
+      })
+    )
+    // bcs its a protected precodure we can destructure ctx and input
+    .query(async ({ input }) => {
+      // from input {} we destructure curosr and limit
+      const { limit, cursor, categoryId } = input;
+      // from ctx we can destructyure user id
+
+      // only selects videos that uploaded by currently logged in user
+      const data = await db
+        .select({
+          ...getTableColumns(videos),
+          user: users,
+          viewCount: db.$count(videoViews, eq(videoViews.videoId, videos.id)),
+          likeCount: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "like")
+            )
+          ),
+          dislikeCount: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "dislike")
+            )
+          ),
+        })
+        .from(videos)
+        .innerJoin(users, eq(videos.userId, users.id))
+        .where(
+          and(
+            eq(videos.visibility, "public"), //only fetch videos which has publice visibility
+            categoryId ? eq(videos.categoryId, categoryId) : undefined,
+            cursor
+              ? or(
+                  lt(videos.updatedAt, cursor.updatedAt),
+                  and(
+                    eq(videos.updatedAt, cursor.updatedAt),
+                    lt(videos.id, cursor.id)
+                  )
+                )
+              : undefined
+          )
+        )
+        .orderBy(desc(videos.updatedAt), desc(videos.id))
+        .limit(limit + 1); // from videos table, select videos which their userId property is eq to user.userId // in studio we want only show videos uploaded by currently logged in user notALL OTHER USERS!
+      const hasMore = data.length > limit; //if data(videos uploaded by current user) are more than limit that we pass as argument in prefetchinfinite
+      const items = hasMore ? data.slice(0, -1) : data;
+      // set the cursor to last item if there is more data
+      const lastItem = items[items.length - 1];
+      const nextCursor = hasMore
+        ? { id: lastItem.id, updatedAt: lastItem.updatedAt }
+        : null;
+      return { items, nextCursor };
+    }),
+
+  getManySubscribed: protectedProcedure
+    .input(
+      z.object({
+        cursor: z
+          .object({
+            id: z.string().uuid(),
+            updatedAt: z.date(),
+          })
+          .nullish(), //means cursor is optional
+        limit: z.number().min(1).max(100),
+      })
+    )
+    // bcs its a protected precodure we can destructure ctx and input
+    .query(async ({ input, ctx }) => {
+      // from input {} we destructure curosr and limit
+      const { limit, cursor } = input;
+      // from ctx we can destructyure user id
+      const { id: userId } = ctx.user;
+
+      const viewerSubscriptions = db.$with("viewer_subscriptions").as(
+        db
+          .select({
+            userId: subscriptions.creatorId,
+          })
+          .from(subscriptions)
+          .where(eq(subscriptions.viewerId, userId))
+      );
+
+      // only selects videos that uploaded by currently logged in user
+      const data = await db
+        .with(viewerSubscriptions)
+        .select({
+          ...getTableColumns(videos),
+          user: users,
+          viewCount: db.$count(videoViews, eq(videoViews.videoId, videos.id)),
+          likeCount: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "like")
+            )
+          ),
+          dislikeCount: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "dislike")
+            )
+          ),
+        })
+        .from(videos)
+        .innerJoin(users, eq(videos.userId, users.id))
+        .innerJoin(
+          viewerSubscriptions,
+          eq(viewerSubscriptions.userId, users.id)
+        )
+        .where(
+          and(
+            eq(videos.visibility, "public"), //only fetch videos which has publice visibility
+            cursor
+              ? or(
+                  lt(videos.updatedAt, cursor.updatedAt),
+                  and(
+                    eq(videos.updatedAt, cursor.updatedAt),
+                    lt(videos.id, cursor.id)
+                  )
+                )
+              : undefined
+          )
+        )
+        .orderBy(desc(videos.updatedAt), desc(videos.id))
+        .limit(limit + 1); // from videos table, select videos which their userId property is eq to user.userId // in studio we want only show videos uploaded by currently logged in user notALL OTHER USERS!
+      const hasMore = data.length > limit; //if data(videos uploaded by current user) are more than limit that we pass as argument in prefetchinfinite
+      const items = hasMore ? data.slice(0, -1) : data;
+      // set the cursor to last item if there is more data
+      const lastItem = items[items.length - 1];
+      const nextCursor = hasMore
+        ? { id: lastItem.id, updatedAt: lastItem.updatedAt }
+        : null;
+      return { items, nextCursor };
+    }),
+
+  getManyTrending: baseProcedure
+    .input(
+      z.object({
+        cursor: z
+          .object({
+            id: z.string().uuid(),
+            viewCount: z.number(),
+          })
+          .nullish(), //means cursor is optional
+        limit: z.number().min(1).max(100),
+      })
+    )
+    // bcs its a protected precodure we can destructure ctx and input
+    .query(async ({ input }) => {
+      // from input {} we destructure curosr and limit
+      const { limit, cursor } = input;
+      const viewCountSubquery = db.$count(
+        videoViews,
+        eq(videoViews.videoId, videos.id)
+      );
+      // only selects videos that uploaded by currently logged in user
+      const data = await db
+        .select({
+          ...getTableColumns(videos),
+          user: users,
+          viewCount: viewCountSubquery,
+          likeCount: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "like")
+            )
+          ),
+          dislikeCount: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "dislike")
+            )
+          ),
+        })
+        .from(videos)
+        .innerJoin(users, eq(videos.userId, users.id))
+        .where(
+          and(
+            eq(videos.visibility, "public"), //only fetch videos which has publice visibility
+
+            cursor
+              ? or(
+                  lt(viewCountSubquery, cursor.viewCount),
+                  and(
+                    eq(viewCountSubquery, cursor.viewCount),
+                    lt(videos.id, cursor.id)
+                  )
+                )
+              : undefined
+          )
+        )
+        .orderBy(desc(viewCountSubquery), desc(videos.id)) // orders videos base on highest views
+        .limit(limit + 1); // from videos table, select videos which their userId property is eq to user.userId // in studio we want only show videos uploaded by currently logged in user notALL OTHER USERS!
+      const hasMore = data.length > limit; //if data(videos uploaded by current user) are more than limit that we pass as argument in prefetchinfinite
+      const items = hasMore ? data.slice(0, -1) : data;
+      // set the cursor to last item if there is more data
+      const lastItem = items[items.length - 1];
+      const nextCursor = hasMore
+        ? { id: lastItem.id, viewCount: lastItem.viewCount }
+        : null;
+      return { items, nextCursor };
+    }),
 
   getOne: baseProcedure
     .input(z.object({ id: z.string().uuid() }))

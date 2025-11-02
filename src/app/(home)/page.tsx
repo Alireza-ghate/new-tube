@@ -1,5 +1,6 @@
 // @ (alias) refers to the src folder
 
+import { DEFAULT_LIMIT } from "@/constants";
 import HomeView from "@/modules/home/ui/views/home-view";
 import { HydrateClient, trpc } from "@/trpc/server";
 
@@ -16,6 +17,10 @@ interface HomePageProps {
 async function HomePage({ searchParams }: HomePageProps) {
   const { categoryId } = await searchParams;
   void trpc.categories.getMany.prefetch(); // prefetch data and save it into data cache in the server side, then client component will use this pre-fetched data
+  void trpc.videos.getMany.prefetchInfinite({
+    categoryId,
+    limit: DEFAULT_LIMIT,
+  });
   return (
     // where ever in any single component we pre-fetch, we use HydrateClient
     <HydrateClient>

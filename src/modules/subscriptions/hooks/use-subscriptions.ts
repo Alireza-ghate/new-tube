@@ -18,6 +18,7 @@ export default function useSubscriptions({
   const subscribe = trpc.subscriptions.create.useMutation({
     onSuccess: () => {
       toast.success("Susbscribed!");
+      utils.videos.getManySubscribed.invalidate();
       if (fromVideoId) {
         utils.videos.getOne.invalidate({ id: fromVideoId });
       }
@@ -33,6 +34,7 @@ export default function useSubscriptions({
   const unsubscribe = trpc.subscriptions.remove.useMutation({
     onSuccess: () => {
       toast.success("Unsusbscribed!");
+      utils.videos.getManySubscribed.invalidate();
       if (fromVideoId) {
         utils.videos.getOne.invalidate({ id: fromVideoId });
       }
