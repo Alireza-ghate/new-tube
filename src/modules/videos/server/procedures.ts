@@ -24,7 +24,6 @@ import {
   lt,
   or,
 } from "drizzle-orm";
-import { view } from "drizzle-orm/sqlite-core";
 
 import { UTApi } from "uploadthing/server";
 import z from "zod";

@@ -23,7 +23,10 @@ function VideoReactions({
   const clerk = useClerk(); //to check if user logged in to like and dislike video
 
   const dislike = trpc.videoReactions.dislike.useMutation({
-    onSuccess: () => utils.videos.getOne.invalidate({ id: videoId }),
+    onSuccess: () => {
+      utils.videos.getOne.invalidate({ id: videoId });
+      utils.playlists.getLiked.invalidate();
+    },
     onError: (error) => {
       toast.error("for like/dislike first login");
       if (error.data?.code === "UNAUTHORIZED") {
@@ -34,7 +37,10 @@ function VideoReactions({
   console.log("videoReaction: ", viewerReactions);
 
   const like = trpc.videoReactions.like.useMutation({
-    onSuccess: () => utils.videos.getOne.invalidate({ id: videoId }),
+    onSuccess: () => {
+      utils.videos.getOne.invalidate({ id: videoId });
+      utils.playlists.getLiked.invalidate();
+    },
     onError: (error) => {
       toast.error("for like/dislike first login");
       if (error.data?.code === "UNAUTHORIZED") {

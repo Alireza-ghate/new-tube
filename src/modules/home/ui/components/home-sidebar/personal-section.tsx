@@ -11,6 +11,7 @@ import {
 import { useAuth, useClerk } from "@clerk/nextjs";
 import { HistoryIcon, ListVideoIcon, ThumbsUpIcon } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const items = [
   {
@@ -34,6 +35,7 @@ const items = [
 ];
 function PersonalSection() {
   const clerk = useClerk();
+  const pathname = usePathname();
   const { isSignedIn } = useAuth();
   return (
     <SidebarGroup>
@@ -44,9 +46,10 @@ function PersonalSection() {
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
                 asChild
-                isActive={false}
+                isActive={pathname === item.url}
                 tooltip={item.title}
                 onClick={(e) => {
+                  //if there is no user and our item has auth set to true instead of redirect user to that page, redirect user to sign in page
                   if (!isSignedIn && item.auth) {
                     e.preventDefault();
                     return clerk.openSignIn();
