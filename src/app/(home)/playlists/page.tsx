@@ -1,5 +1,12 @@
-function PlaylistsPage() {
-  return <div>PlaylistsPage</div>;
+import PlaylistsView from "@/modules/playlists/ui/views/playlists-view";
+import { HydrateClient } from "@/trpc/server";
+
+async function PlaylistsPage() {
+  return (
+    <HydrateClient>
+      <PlaylistsView />
+    </HydrateClient>
+  );
 }
 
 export default PlaylistsPage;

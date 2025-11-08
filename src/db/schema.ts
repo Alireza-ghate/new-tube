@@ -242,3 +242,40 @@ export const videoReactions = pgTable(
 export const videReactionsInsertSchema = createInsertSchema(videoReactions);
 export const videReactionsUpdateSchema = createUpdateSchema(videoReactions);
 export const videReactionsSelectSchema = createSelectSchema(videoReactions);
+
+// each video can be in deffrent playlist so we need a relationship and new table
+export const playlistVideos = pgTable(
+  "playlist_videos",
+  {
+    playlistId: uuid("playlist_id")
+      .references(() => playlists.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    videoId: uuid("video_id")
+      .references(() => videos.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({
+      name: "playlist_videos_pk",
+      columns: [t.playlistId, t.videoId],
+    }),
+  ]
+);
+
+export const playlists = pgTable("playlists", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(), // required field
+  description: text("description"), // optional field
+  userId: uuid("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(), // each playlist will created by a user
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});

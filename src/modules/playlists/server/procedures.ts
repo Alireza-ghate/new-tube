@@ -1,6 +1,13 @@
-import { users, videoReactions, videos, videoViews } from "@/db/schema";
+import {
+  playlists,
+  users,
+  videoReactions,
+  videos,
+  videoViews,
+} from "@/db/schema";
 import { db } from "@/index";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { TRPCError } from "@trpc/server";
 import { and, desc, eq, getTableColumns, lt, or } from "drizzle-orm";
 import z from "zod";
 
@@ -172,5 +179,26 @@ export const playlistsRouter = createTRPCRouter({
         ? { id: lastItem.id, likedAt: lastItem.likedAt }
         : null;
       return { items, nextCursor };
+    }),
+  // Creates playlist
+  create: protectedProcedure
+    .input(z.object({ name: z.string().min(1) }))
+    .mutation(async ({ input, ctx }) => {
+      const { name } = input;
+      const { id: userId } = ctx.user;
+
+      const [createdPlaylists] = await db
+        .insert(playlists)
+        .values({ userId, name })
+        .returning();
+
+      if (!createdPlaylists) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          // message: "Failed to create playlist",
+        });
+      }
+
+      return createdPlaylists;
     }),
 });
