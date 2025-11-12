@@ -24,6 +24,7 @@ const formSchema = z.object({
   name: z.string().min(1),
 });
 function PlaylistCreateModal({ onOpenChange, open }: PlaylistCreateModalProps) {
+  const utils = trpc.useUtils();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,6 +35,7 @@ function PlaylistCreateModal({ onOpenChange, open }: PlaylistCreateModalProps) {
   const create = trpc.playlists.create.useMutation({
     onSuccess: () => {
       toast.success("Playlist created successfully");
+      utils.playlists.getMany.invalidate();
       form.reset(); // reset form
       onOpenChange(false); // close modal
     },
@@ -50,12 +52,12 @@ function PlaylistCreateModal({ onOpenChange, open }: PlaylistCreateModalProps) {
     <ResponsiveModal
       open={open}
       onOpenChange={onOpenChange}
-      title="Create playlist"
+      title="Create a playlist"
     >
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)} // submit form
-          className="flex flex-col gap-4"
+          className="flex flex-col gap-4 px-6 md:px-0"
         >
           <FormField
             control={form.control}
@@ -64,7 +66,7 @@ function PlaylistCreateModal({ onOpenChange, open }: PlaylistCreateModalProps) {
               <FormItem>
                 <FormLabel>Playlist name:</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="My favorite videos" />
+                  <Input {...field} placeholder="example: My favorite videos" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

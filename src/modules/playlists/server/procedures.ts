@@ -1,5 +1,6 @@
 import {
   playlists,
+  playlistVideos,
   users,
   videoReactions,
   videos,
@@ -12,6 +13,62 @@ import { and, desc, eq, getTableColumns, lt, or } from "drizzle-orm";
 import z from "zod";
 
 export const playlistsRouter = createTRPCRouter({
+  // returns all the playlists created by currently logged in user
+  getMany: protectedProcedure
+    .input(
+      z.object({
+        cursor: z
+          .object({
+            id: z.string().uuid(),
+            updatedAt: z.date(),
+          })
+          .nullish(), //means cursor is optional
+        limit: z.number().min(1).max(100),
+      })
+    )
+    // bcs its a protected precodure we can destructure ctx and input
+    .query(async ({ ctx, input }) => {
+      const { id: userId } = ctx.user;
+      const { limit, cursor } = input;
+
+      // only selects videos that uploaded by currently logged in user
+      const data = await db
+        .select({
+          ...getTableColumns(playlists),
+          videoCount: db.$count(
+            playlistVideos,
+            eq(playlistVideos.playlistId, playlists.id)
+          ),
+          user: users,
+        })
+        .from(playlists)
+        .innerJoin(users, eq(playlists.userId, users.id))
+        .where(
+          and(
+            eq(playlists.userId, userId), // only load playlists created by currently logged in user
+            cursor
+              ? or(
+                  lt(playlists.updatedAt, cursor.updatedAt),
+                  and(
+                    eq(playlists.updatedAt, cursor.updatedAt),
+                    lt(playlists.id, cursor.id)
+                  )
+                )
+              : undefined
+          )
+        )
+        .orderBy(desc(playlists.updatedAt), desc(playlists.id))
+        .limit(limit + 1); // from videos table, select videos which their userId property is eq to user.userId // in studio we want only show videos uploaded by currently logged in user notALL OTHER USERS!
+      const hasMore = data.length > limit; //if data(videos uploaded by current user) are more than limit that we pass as argument in prefetchinfinite
+      const items = hasMore ? data.slice(0, -1) : data;
+      // set the cursor to last item if there is more data
+      const lastItem = items[items.length - 1];
+      const nextCursor = hasMore
+        ? { id: lastItem.id, updatedAt: lastItem.updatedAt }
+        : null;
+      return { items, nextCursor };
+    }),
+
   // get video history list
   getHistory: protectedProcedure
     .input(
