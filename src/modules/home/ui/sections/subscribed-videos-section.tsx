@@ -17,24 +17,27 @@ function SubscribedVideosSectionSuspense() {
       },
       { getNextPageParam: (lastPage) => lastPage.nextCursor }
     );
+  console.log(videos.pages.flatMap((page) => page.items));
+  if (videos.pages.flatMap((page) => page.items).length > 0)
+    return (
+      <div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4 [@media(min-width:1920px)]:grid-cols-5 [@media(min-width:2200px)]:grid-cols-6 gap-y-10">
+          {videos.pages
+            .flatMap((page) => page.items)
+            .map((video) => (
+              <VideoGridCard key={video.id} data={video} />
+            ))}
+        </div>
 
-  return (
-    <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4 [@media(min-width:1920px)]:grid-cols-5 [@media(min-width:2200px)]:grid-cols-6 gap-y-10">
-        {videos.pages
-          .flatMap((page) => page.items)
-          .map((video) => (
-            <VideoGridCard key={video.id} data={video} />
-          ))}
+        <InfiniteScroll
+          fetchNextPage={query.fetchNextPage}
+          hasNextPage={query.hasNextPage}
+          isFetchingNextPage={query.isFetchingNextPage}
+        />
       </div>
+    );
 
-      <InfiniteScroll
-        fetchNextPage={query.fetchNextPage}
-        hasNextPage={query.hasNextPage}
-        isFetchingNextPage={query.isFetchingNextPage}
-      />
-    </div>
-  );
+  return <p>For watch your favorite videos please go to home page</p>;
 }
 
 function SubscribedVideosSectionSkeleton() {
