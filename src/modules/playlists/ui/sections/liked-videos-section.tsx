@@ -9,6 +9,7 @@ import VideoRowCard, {
   VideoRowCardSkeleton,
 } from "@/modules/videos/ui/components/video-row-card";
 import { trpc } from "@/trpc/client";
+import { VideoOff } from "lucide-react";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
@@ -20,6 +21,14 @@ function LikedVideosSectionSuspense() {
     },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
+
+  if (!videos.pages.flatMap((page) => page.items).length)
+    return (
+      <div className="py-3 px-4 h-[70vh] flex flex-col items-center justify-center">
+        <VideoOff className="size-32 text-gray-200" strokeWidth={1.5} />
+        <p className="text-muted-foreground">No videos</p>
+      </div>
+    );
   return (
     <div>
       {/* for showing videos on mobile and desktop we can use isMobile or we can define display: none or flex to show/hide it */}

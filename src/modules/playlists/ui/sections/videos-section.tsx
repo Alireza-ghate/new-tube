@@ -12,16 +12,37 @@ import { trpc } from "@/trpc/client";
 import { VideoOff } from "lucide-react";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { toast } from "sonner";
 
-function HistoryVideosSectionSuspense() {
+interface VideosSectionProps {
+  playlistId: string;
+}
+
+function VideosSectionSuspense({ playlistId }: VideosSectionProps) {
   // const isMobile = useIsMobile();
-  const [videos, query] = trpc.playlists.getHistory.useSuspenseInfiniteQuery(
+  const utils = trpc.useUtils();
+  const [videos, query] = trpc.playlists.getVideos.useSuspenseInfiniteQuery(
     {
       limit: DEFAULT_LIMIT,
+      playlistId,
     },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
+  const removeVideo = trpc.playlists.removeVideo.useMutation({
+    onSuccess: (data) => {
+      toast.success("Video removed from playlist successfully");
+      utils.playlists.getMany.invalidate();
+      utils.playlists.getManyForVideo.invalidate({ videoId: data.videoId });
+      utils.playlists.getOne.invalidate({ id: data.playlistId });
+      utils.playlists.getVideos.invalidate({ playlistId: data.playlistId });
+      utils.videos.getMany.invalidate();
+    },
+    onError: () => {
+      toast.error("Something went wrong: failed to remove video from playlist");
+    },
+  });
 
+  // if there was no videos inside playlist
   if (!videos.pages.flatMap((page) => page.items).length)
     return (
       <div className="py-3 px-4 h-[70vh] flex flex-col items-center justify-center">
@@ -29,6 +50,7 @@ function HistoryVideosSectionSuspense() {
         <p className="text-muted-foreground">No videos</p>
       </div>
     );
+
   return (
     <div>
       {/* for showing videos on mobile and desktop we can use isMobile or we can define display: none or flex to show/hide it */}
@@ -36,14 +58,27 @@ function HistoryVideosSectionSuspense() {
         {videos.pages
           .flatMap((page) => page.items)
           .map((video) => (
-            <VideoGridCard key={video.id} data={video} />
+            <VideoGridCard
+              key={video.id}
+              data={video}
+              onRemove={() =>
+                removeVideo.mutate({ playlistId, videoId: video.id })
+              }
+            />
           ))}
       </div>
       <div className="hidden md:flex flex-col gap-4">
         {videos.pages
           .flatMap((page) => page.items)
           .map((video) => (
-            <VideoRowCard size="compact" key={video.id} data={video} />
+            <VideoRowCard
+              size="compact"
+              key={video.id}
+              data={video}
+              onRemove={() =>
+                removeVideo.mutate({ playlistId, videoId: video.id })
+              }
+            />
           ))}
       </div>
 
@@ -56,7 +91,7 @@ function HistoryVideosSectionSuspense() {
   );
 }
 
-function HistoryVideosSectionSkeleton() {
+function VideosSectionSkeleton() {
   return (
     <>
       <div className="grid md:hidden grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4 [@media(min-width:1920px)]:grid-cols-5 [@media(min-width:2200px)]:grid-cols-6 gap-y-10">
@@ -74,14 +109,14 @@ function HistoryVideosSectionSkeleton() {
   );
 }
 
-function HistoryVideosSection() {
+function VideosSection({ playlistId }: VideosSectionProps) {
   return (
-    <Suspense fallback={<HistoryVideosSectionSkeleton />}>
+    <Suspense fallback={<VideosSectionSkeleton />}>
       <ErrorBoundary fallback={<p>error...</p>}>
-        <HistoryVideosSectionSuspense />
+        <VideosSectionSuspense playlistId={playlistId} />
       </ErrorBoundary>
     </Suspense>
   );
 }
 
-export default HistoryVideosSection;
+export default VideosSection;

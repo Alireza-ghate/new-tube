@@ -39,6 +39,9 @@ function PlaylistAddModal({
       toast.success("Video added to playlist successfully");
       utils.playlists.getMany.invalidate(); //allplaylist page will be invalidated
       utils.playlists.getManyForVideo.invalidate({ videoId });
+      utils.playlists.getOne.invalidate({ id: data.playlistId });
+      utils.playlists.getVideos.invalidate({ playlistId: data.playlistId });
+      utils.videos.getMany.invalidate();
     },
     onError: () => {
       toast.error("Something went wrong: failed to add video to playlist");
@@ -50,6 +53,9 @@ function PlaylistAddModal({
       toast.success("Video removed from playlist successfully");
       utils.playlists.getMany.invalidate();
       utils.playlists.getManyForVideo.invalidate({ videoId });
+      utils.playlists.getOne.invalidate({ id: data.playlistId });
+      utils.playlists.getVideos.invalidate({ playlistId: data.playlistId });
+      utils.videos.getMany.invalidate();
     },
     onError: () => {
       toast.error("Something went wrong: failed to remove video from playlist");
