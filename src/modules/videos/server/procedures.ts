@@ -33,6 +33,7 @@ export const videosRouter = createTRPCRouter({
     .input(
       z.object({
         categoryId: z.string().uuid().nullish(),
+        userId: z.string().uuid().nullish(),
         cursor: z
           .object({
             id: z.string().uuid(),
@@ -45,7 +46,7 @@ export const videosRouter = createTRPCRouter({
     // bcs its a protected precodure we can destructure ctx and input
     .query(async ({ input }) => {
       // from input {} we destructure curosr and limit
-      const { limit, cursor, categoryId } = input;
+      const { limit, cursor, categoryId, userId } = input;
       // from ctx we can destructyure user id
 
       // only selects videos that uploaded by currently logged in user
@@ -74,7 +75,8 @@ export const videosRouter = createTRPCRouter({
         .where(
           and(
             eq(videos.visibility, "public"), //only fetch videos which has publice visibility
-            categoryId ? eq(videos.categoryId, categoryId) : undefined,
+            categoryId ? eq(videos.categoryId, categoryId) : undefined, // if categoryId is provided then only fetch videos which has same categoryId
+            userId ? eq(videos.userId, userId) : undefined, // if userId provided only feteches videos who created/uploader by that user
             cursor
               ? or(
                   lt(videos.updatedAt, cursor.updatedAt),

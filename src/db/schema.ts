@@ -24,7 +24,8 @@ export const users = pgTable(
     id: uuid("id").defaultRandom().primaryKey(),
     clerkId: text("clerk_id").unique().notNull(), // clerk user id // notNull() means that this field is required // unique() means that this field must be unique
     name: text("name").notNull(), // use text when we do not know name field how many characters it will have // user varchar({ length: 255 }) for limit length of string
-    // TODO add banner fieled
+    bannerUrl: text("banner_url"),
+    bannerKey: text("banner_key"),
     imageUrl: text("image_url").notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(), // defaultNow() means that this field will be set to the current date and time
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
