@@ -10,6 +10,58 @@ const f = createUploadthing();
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
+  bannerUploader: f({
+    image: {
+      /**
+       * For full list of options and defaults, see the File Route API reference
+       * @see https://docs.uploadthing.com/file-routes#route-config
+       */
+      maxFileSize: "4MB",
+      maxFileCount: 1,
+    },
+  })
+    // Set permissions and file types for this FileRoute
+    .middleware(async () => {
+      // This code runs on your server before upload
+      const { userId: clerkUserId } = await auth();
+
+      // If you throw, the user will not be able to upload
+      if (!clerkUserId) throw new UploadThingError("Unauthorized");
+
+      // for make sure user with its database userId is allowed to upload things not clerkId
+      const [existingUser] = await db
+        .select()
+        .from(users)
+        .where(eq(users.clerkId, clerkUserId));
+
+      if (!existingUser) throw new UploadThingError("Unauthorized");
+
+      // before uploading new image we want to delete old one cleanup old files
+      if (existingUser.bannerKey) {
+        const utapi = new UTApi();
+        await utapi.deleteFiles(existingUser.bannerKey);
+        await db
+          .update(users)
+          .set({ bannerKey: null, bannerUrl: null })
+          .where(eq(users.id, existingUser.id));
+      }
+      // Whatever is returned here is accessible in onUploadComplete as `metadata`
+      return { userId: existingUser.id };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      // This code RUNS ON YOUR SERVER after upload
+      await db
+        .update(users)
+        .set({
+          bannerUrl: file.url, //file.url === url of image that we uploaded by uploadeThing component. this new url replace with old one
+          bannerKey: file.key,
+        })
+        .where(eq(users.id, metadata.userId));
+
+      // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+      return { uploadedBy: metadata.userId };
+    }),
+
   // Define as many FileRoutes as you like, each with a unique routeSlug
   thumbnailUploader: f({
     image: {
