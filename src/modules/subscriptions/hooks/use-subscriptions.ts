@@ -20,6 +20,7 @@ export default function useSubscriptions({
       toast.success("Susbscribed!");
       utils.videos.getManySubscribed.invalidate();
       utils.users.getOne.invalidate({ id: userId });
+      utils.subscriptions.getMany.invalidate();
       if (fromVideoId) {
         utils.videos.getOne.invalidate({ id: fromVideoId });
       }
@@ -37,6 +38,7 @@ export default function useSubscriptions({
       toast.success("Unsusbscribed!");
       utils.videos.getManySubscribed.invalidate();
       utils.users.getOne.invalidate({ id: userId });
+      utils.subscriptions.getMany.invalidate();
       if (fromVideoId) {
         utils.videos.getOne.invalidate({ id: fromVideoId });
       }

@@ -5,6 +5,9 @@ import {
 } from "@/components/ui/sidebar";
 import MainSection from "./main-section";
 import PersonalSection from "./personal-section";
+import SubscriptionsSection from "./subscriptions-section";
+import { SignedIn } from "@clerk/nextjs";
+import { Separator } from "@/components/ui/separator";
 
 function HomeSidebar() {
   return (
@@ -15,6 +18,12 @@ function HomeSidebar() {
         <SidebarSeparator />
         {/* render for both authenticated and unauthenticated users */}
         <PersonalSection />
+        <SignedIn>
+          <>
+            <Separator />
+            <SubscriptionsSection />
+          </>
+        </SignedIn>
       </SidebarContent>
     </Sidebar>
   );

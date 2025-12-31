@@ -12,6 +12,7 @@ async function UserPage({ params }: UserPageProps) {
   void trpc.users.getOne.prefetch({ id: userId });
   //  fetches only videos uploaded by userId
   void trpc.videos.getMany.prefetchInfinite({ limit: DEFAULT_LIMIT, userId });
+
   return (
     <HydrateClient>
       <Userview userId={userId} />
