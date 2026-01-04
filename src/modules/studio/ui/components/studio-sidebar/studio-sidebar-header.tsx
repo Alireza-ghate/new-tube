@@ -35,7 +35,11 @@ function StudioSidebarHeader() {
     return (
       <SidebarMenuItem className="flex items-center justify-center pb-4">
         <SidebarMenuButton asChild tooltip="Your profile">
-          <Link className="justify-center items-center" href="/users/current">
+          <Link
+            prefetch
+            className="justify-center items-center"
+            href="/users/current"
+          >
             <UserAvatar
               imageUrl={user?.imageUrl}
               name={user?.fullName ?? "User"} //if fullName is null or undefined returns "User" as display name
@@ -49,7 +53,7 @@ function StudioSidebarHeader() {
 
   return (
     <SidebarHeader className="flex items-center justify-center pb-4">
-      <Link href="/users/current">
+      <Link prefetch href="/users/current">
         <UserAvatar
           imageUrl={user?.imageUrl}
           name={user?.fullName ?? "User"} //if fullName is null or undefined returns "User" as display name

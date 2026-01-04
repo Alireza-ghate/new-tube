@@ -62,6 +62,7 @@ function SubscriptionsSection() {
                     tooltip={subscription.user.name}
                   >
                     <Link
+                      prefetch
                       className="flex items-center gap-x-4"
                       href={`/users/${subscription.user.id}`}
                     >
@@ -83,6 +84,7 @@ function SubscriptionsSection() {
                 isActive={pathname === "/subscriptions"}
               >
                 <Link
+                  prefetch
                   href="/subscriptions"
                   className="flex items-center gap-x-4"
                 >

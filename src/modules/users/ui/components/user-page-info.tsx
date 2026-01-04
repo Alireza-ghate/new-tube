@@ -78,7 +78,9 @@ function UserPageInfo({ user }: UserPageInfoProps) {
             variant="secondary"
             className="w-full mt-3 rounded-full"
           >
-            <Link href="/studio">Go to studio</Link>
+            <Link prefetch href="/studio">
+              Go to studio
+            </Link>
           </Button>
         ) : (
           <SubscriptionButton
@@ -116,7 +118,9 @@ function UserPageInfo({ user }: UserPageInfoProps) {
 
           {user.clerkId === userId ? (
             <Button asChild variant="secondary" className="mt-3 rounded-full">
-              <Link href="/studio">Go to studio</Link>
+              <Link prefetch href="/studio">
+                Go to studio
+              </Link>
             </Button>
           ) : (
             <SubscriptionButton

@@ -29,7 +29,7 @@ function StudioSidebar() {
                 asChild
                 tooltip="Content"
               >
-                <Link href="/studio">
+                <Link prefetch href="/studio">
                   <VideoIcon className="size-5" />
                   <span className="text-sm">Content</span>
                 </Link>
@@ -40,7 +40,7 @@ function StudioSidebar() {
 
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip="Exit studio">
-                <Link href="/">
+                <Link prefetch href="/">
                   <LogOutIcon className="size-5" />
                   <span className="text-sm">Exit studio</span>
                 </Link>

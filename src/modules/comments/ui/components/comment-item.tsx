@@ -57,6 +57,7 @@ function CommentItem({ comment, variant = "comment" }: CommentItemProps) {
     <div>
       <div className="flex gap-4">
         <Link
+          prefetch
           className="flex flex-col items-center gap-y-2"
           href={`/users/${comment.userId}`}
         >
@@ -71,6 +72,7 @@ function CommentItem({ comment, variant = "comment" }: CommentItemProps) {
         </Link>
         <div className="flex-1 min-w-0">
           <Link
+            prefetch
             className="hover:underline w-fit inline-block"
             href={`/users/${comment.userId}`}
           >

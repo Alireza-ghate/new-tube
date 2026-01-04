@@ -56,7 +56,11 @@ function PersonalSection() {
                   }
                 }}
               >
-                <Link className="flex items-center gap-x-4" href={item.url}>
+                <Link
+                  prefetch
+                  className="flex items-center gap-x-4"
+                  href={item.url}
+                >
                   <item.icon />
                   <span>{item.title}</span>
                 </Link>

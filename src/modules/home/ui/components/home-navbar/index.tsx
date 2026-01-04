@@ -6,13 +6,13 @@ import AuthButton from "@/modules/auth/ui/components/auth-button";
 
 function HomeNavbar() {
   return (
-    <nav className="fixed top-0 left-0 right-0 h-16 px-2 pr-5 z-50 bg-white">
+    <nav className="fixed top-0 left-0 right-0 h-16 px-2 pr-5 z-50 bg-white flex">
       {/* navbar content goes here (container) */}
-      <div className="flex items-center gap-x-4">
+      <div className="flex items-center gap-x-4 w-full">
         {/* Menu and Logo */}
         <div className="flex items-center flex-shrink-0">
           <SidebarTrigger />
-          <Link href="/">
+          <Link prefetch href="/" className="hidden md:block">
             <div className="flex items-center gap-x-1 p-4">
               <Image src="/logo.svg" width={32} height={32} alt="logo" />
               <p className="text-xl font-semibold tracking-tight">NewTube</p>

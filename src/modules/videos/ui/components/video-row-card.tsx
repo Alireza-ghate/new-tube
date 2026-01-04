@@ -104,7 +104,11 @@ function VideoRowCard({ data, onRemove, size = "default" }: VideoRowCardProps) {
   }, [data.likeCount]);
   return (
     <div className={videoRowCardVariants({ size })}>
-      <Link href={`/videos/${data.id}`} className={thumbnailVariants({ size })}>
+      <Link
+        prefetch
+        href={`/videos/${data.id}`}
+        className={thumbnailVariants({ size })}
+      >
         <VideoThumbnail
           imageUrl={data.thumbnailUrl}
           duration={data.duration}
@@ -115,7 +119,7 @@ function VideoRowCard({ data, onRemove, size = "default" }: VideoRowCardProps) {
       {/* infos */}
       <div className="flex-1 min-w-0">
         <div className="flex justify-between gap-x-2">
-          <Link className="flex-1 min-w-0" href={`/videos/${data.id}`}>
+          <Link prefetch className="flex-1 min-w-0" href={`/videos/${data.id}`}>
             <h3
               className={cn(
                 "font-medium line-clamp-2",
