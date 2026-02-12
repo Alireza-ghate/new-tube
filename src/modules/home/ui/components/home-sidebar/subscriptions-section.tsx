@@ -38,7 +38,7 @@ function SubscriptionsSection() {
     { limit: DEFAULT_LIMIT },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
-    }
+    },
   ); //get all subscriptions from db
 
   if (data?.pages.flatMap((page) => page.items).length === 0) return null;

@@ -16,6 +16,9 @@ import {
   createSelectSchema,
 } from "drizzle-zod";
 
+// we use pgEnum to define field or column should be type of "like" or "dislike"
+export const reactionType = pgEnum("reaction_type", ["like", "dislike"]);
+
 // create schemas for every tables in database
 // create schema for "users" table
 export const users = pgTable(
@@ -30,7 +33,7 @@ export const users = pgTable(
     createdAt: timestamp("created_at").notNull().defaultNow(), // defaultNow() means that this field will be set to the current date and time
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
-  (t) => [uniqueIndex("clerk_id_idx").on(t.clerkId)] // create unique index on "clerk_id" field for querying by clerk user id
+  (t) => [uniqueIndex("clerk_id_idx").on(t.clerkId)], // create unique index on "clerk_id" field for querying by clerk user id
 );
 
 // export const userRelations = relations(users, ({ many }) => ({
@@ -66,7 +69,7 @@ export const subscriptions = pgTable(
       name: "subscriptions_pk",
       columns: [t.viewerId, t.creatorId],
     }),
-  ]
+  ],
 );
 
 // export const subscriptionRelations = relations(subscriptions, ({ one }) => ({
@@ -91,7 +94,7 @@ export const categories = pgTable(
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
-  (t) => [uniqueIndex("name_idx").on(t.name)] //create index for "name" field in case we wanted to query by name
+  (t) => [uniqueIndex("name_idx").on(t.name)], //create index for "name" field in case we wanted to query by name
 );
 
 export const videoVisibility = pgEnum("video_visibility", [
@@ -158,15 +161,13 @@ export const comments = pgTable(
         name: "comments_parent_id_fkey",
       }).onDelete("cascade"),
     ];
-  }
+  },
 );
 
 export const commentInsertSchema = createInsertSchema(comments);
 export const commentUpdateSchema = createUpdateSchema(comments);
 export const commentSelectSchema = createSelectSchema(comments);
 
-// we use pgEnum to define field or column should be type of "like" or "dislike"
-export const reactionType = pgEnum("reaction_type", ["like", "dislike"]);
 export const commentReactions = pgTable(
   "comment_reactions",
   {
@@ -187,7 +188,7 @@ export const commentReactions = pgTable(
       name: "comment_reactions_pk",
       columns: [t.userId, t.commentId],
     }), // primary key is combination of userId and commentId
-  ]
+  ],
 );
 
 export const videoViews = pgTable(
@@ -210,7 +211,7 @@ export const videoViews = pgTable(
       name: "video_views_pk",
       columns: [t.userId, t.videoId],
     }), // primary key is combination of userId and videoId
-  ]
+  ],
 );
 
 export const videoViewInsertSchema = createInsertSchema(videoViews);
@@ -237,7 +238,7 @@ export const videoReactions = pgTable(
       name: "video_reactions_pk",
       columns: [t.userId, t.videoId],
     }), // primary key is combination of userId and videoId
-  ]
+  ],
 );
 
 export const videReactionsInsertSchema = createInsertSchema(videoReactions);
@@ -267,7 +268,7 @@ export const playlistVideos = pgTable(
       name: "playlist_videos_pk",
       columns: [t.playlistId, t.videoId],
     }),
-  ]
+  ],
 );
 
 export const playlists = pgTable("playlists", {

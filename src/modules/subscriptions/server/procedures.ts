@@ -16,7 +16,7 @@ export const subscriptionsRouter = createTRPCRouter({
           })
           .nullish(), //means cursor is optional
         limit: z.number().min(1).max(100),
-      })
+      }),
     )
     // bcs its a protected precodure we can destructure ctx and input
     .query(async ({ input, ctx }) => {
@@ -33,7 +33,7 @@ export const subscriptionsRouter = createTRPCRouter({
             ...getTableColumns(users),
             subscriberCount: db.$count(
               subscriptions,
-              eq(subscriptions.creatorId, users.id)
+              eq(subscriptions.creatorId, users.id),
             ),
           },
         })
@@ -47,11 +47,11 @@ export const subscriptionsRouter = createTRPCRouter({
                   lt(subscriptions.updatedAt, cursor.updatedAt),
                   and(
                     eq(subscriptions.updatedAt, cursor.updatedAt),
-                    lt(subscriptions.creatorId, cursor.creatorId)
-                  )
+                    lt(subscriptions.creatorId, cursor.creatorId),
+                  ),
                 )
-              : undefined
-          )
+              : undefined,
+          ),
         )
         .orderBy(desc(subscriptions.updatedAt), desc(subscriptions.creatorId))
         .limit(limit + 1); // from videos table, select videos which their userId property is eq to user.userId // in studio we want only show videos uploaded by currently logged in user notALL OTHER USERS!
@@ -60,7 +60,7 @@ export const subscriptionsRouter = createTRPCRouter({
       // set the cursor to last item if there is more data
       const lastItem = items[items.length - 1];
       const nextCursor = hasMore
-        ? { id: lastItem.creatorId, updatedAt: lastItem.updatedAt }
+        ? { creatorId: lastItem.creatorId, updatedAt: lastItem.updatedAt }
         : null;
       return { items, nextCursor };
     }),
@@ -90,8 +90,8 @@ export const subscriptionsRouter = createTRPCRouter({
         .where(
           and(
             eq(subscriptions.viewerId, ctx.user.id),
-            eq(subscriptions.creatorId, userId)
-          )
+            eq(subscriptions.creatorId, userId),
+          ),
         )
         .returning();
 

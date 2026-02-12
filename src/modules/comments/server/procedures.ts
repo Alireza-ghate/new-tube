@@ -28,12 +28,13 @@ export const commentsRouter = createTRPCRouter({
         videoId: z.string().uuid(),
         value: z.string(),
         parentId: z.string().uuid().nullish(), // optional,
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const { id: userId } = ctx.user;
       const { value, videoId, parentId } = input;
       // only one level reply: reply on main comment
+
       const [existingComment] = await db
         .select()
         .from(comments)
@@ -81,12 +82,13 @@ export const commentsRouter = createTRPCRouter({
           .object({ id: z.string().uuid(), updatedAt: z.date() })
           .nullish(),
         limit: z.number().min(1).max(100),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       const { videoId, limit, cursor, parentId } = input;
       const { clerkUserId } = ctx;
       let userId;
+
       const [user] = await db
         .select()
         .from(users)
@@ -102,7 +104,7 @@ export const commentsRouter = createTRPCRouter({
             type: commentReactions.type,
           })
           .from(commentReactions)
-          .where(inArray(commentReactions.userId, userId ? [userId] : []))
+          .where(inArray(commentReactions.userId, userId ? [userId] : [])),
       );
 
       const replies = db.$with("replies").as(
@@ -113,7 +115,7 @@ export const commentsRouter = createTRPCRouter({
           })
           .from(comments)
           .where(isNotNull(comments.parentId))
-          .groupBy(comments.parentId)
+          .groupBy(comments.parentId),
       );
       const [totalData, data] = await Promise.all([
         db
@@ -133,15 +135,15 @@ export const commentsRouter = createTRPCRouter({
               commentReactions,
               and(
                 eq(commentReactions.type, "like"),
-                eq(commentReactions.commentId, comments.id)
-              )
+                eq(commentReactions.commentId, comments.id),
+              ),
             ),
             dislikeCount: db.$count(
               commentReactions,
               and(
                 eq(commentReactions.type, "dislike"),
-                eq(commentReactions.commentId, comments.id)
-              )
+                eq(commentReactions.commentId, comments.id),
+              ),
             ),
           })
           .from(comments)
@@ -156,17 +158,17 @@ export const commentsRouter = createTRPCRouter({
                     lt(comments.updatedAt, cursor.updatedAt),
                     and(
                       eq(comments.updatedAt, cursor.updatedAt),
-                      lt(comments.id, cursor.id)
-                    )
+                      lt(comments.id, cursor.id),
+                    ),
                   )
-                : undefined
-            )
+                : undefined,
+            ),
           )
           // join with users table
           .innerJoin(users, eq(comments.userId, users.id))
           .leftJoin(viewerReactions, eq(comments.id, viewerReactions.commentId))
           .leftJoin(replies, eq(comments.id, replies.parentId))
-          .orderBy(desc(comments.createdAt), desc(comments.id))
+          .orderBy(desc(comments.updatedAt), desc(comments.id))
           .limit(limit + 1),
       ]);
 

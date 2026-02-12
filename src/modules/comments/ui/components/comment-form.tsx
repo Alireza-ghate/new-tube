@@ -35,6 +35,19 @@ function CommentForm({
   const clerk = useClerk();
   const utils = trpc.useUtils();
 
+  const commentFormSchema = commentInsertSchema.omit({
+    userId: true,
+  });
+
+  const form = useForm<z.infer<typeof commentFormSchema>>({
+    resolver: zodResolver(commentFormSchema),
+    defaultValues: {
+      videoId,
+      value: "",
+      parentId,
+    },
+  });
+
   const create = trpc.comments.create.useMutation({
     onSuccess: () => {
       toast.success("Comment added");
@@ -43,25 +56,17 @@ function CommentForm({
       form.reset();
       onSuccess?.();
     },
+
     onError: (error) => {
+      toast.error("First login to your account in order to add comment");
       if (error.data?.code === "UNAUTHORIZED") {
-        toast.error("First login to your account in order to add comment");
         clerk.openSignIn();
       }
     },
   });
 
-  const form = useForm<z.infer<typeof commentInsertSchema>>({
-    resolver: zodResolver(commentInsertSchema.omit({ userId: true })),
-    defaultValues: {
-      videoId,
-      value: "",
-      parentId,
-    },
-  });
-
-  function handleSubmit(values: z.infer<typeof commentInsertSchema>) {
-    if (values.value.trim() === "") return; //if user dont write anything in textarea dont do anything
+  function handleSubmit(values: z.infer<typeof commentFormSchema>) {
+    if (values.value.trim() === "") return; //if user dosnt write anything in textarea dont do anything
     create.mutate(values);
   }
 

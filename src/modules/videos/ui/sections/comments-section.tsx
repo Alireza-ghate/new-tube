@@ -75,7 +75,7 @@ function CommentsSectionSuspense({ videoId }: CommentsSectionProps) {
           {comments.pages[0].totalCount} comments
         </h1>
         {user && isLoaded && isSignedIn ? (
-          <CommentForm videoId={videoId} onSuccess={() => {}} />
+          <CommentForm videoId={videoId} />
         ) : (
           loginBlock
         )}

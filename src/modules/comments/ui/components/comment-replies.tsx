@@ -1,10 +1,8 @@
+import { Button } from "@/components/ui/button";
 import { DEFAULT_LIMIT } from "@/constants";
 import { trpc } from "@/trpc/client";
 import { CornerDownRightIcon, Loader2Icon } from "lucide-react";
 import CommentItem from "./comment-item";
-import InfiniteScroll from "@/components/shared/infinite-scroll";
-import { Button } from "@/components/ui/button";
-import { is } from "drizzle-orm";
 
 interface CommentRepliesProps {
   parentId: string;
@@ -19,7 +17,7 @@ function CommentReplies({ parentId, videoId }: CommentRepliesProps) {
         videoId,
         parentId,
       },
-      { getNextPageParam: (lastPage) => lastPage.nextCursor }
+      { getNextPageParam: (lastPage) => lastPage.nextCursor },
     );
   return (
     <div className="pl-14">
