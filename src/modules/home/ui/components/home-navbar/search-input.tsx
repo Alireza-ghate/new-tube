@@ -39,7 +39,6 @@ function SearchInputSuspense() {
 
     // setValue(newQuery);
     // router.push(url.toString()); // redirect users to a place for showing result (mydomain.com/search?query=abc)
-
     const params = new URLSearchParams();
 
     const newQuery = value.trim();
