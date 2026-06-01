@@ -208,7 +208,7 @@ function FormSectionSuspense({ videoId }: FormSectionProps) {
                   </FormItem>
                 )}
               />
-              {/* ADDTO: UPLOAD THUMBNAIL */}
+
               <FormField
                 name="thumbnailUrl"
                 control={form.control}
@@ -347,7 +347,7 @@ function FormSectionSuspense({ videoId }: FormSectionProps) {
                       <p className="text-sm">
                         {/* whenever video has no audio and subtitles muxTrackStatus will be null */}
                         {snakeCaseToTitle(
-                          video.muxTrackStatus || "no_subtitles"
+                          video.muxTrackStatus || "no_subtitles",
                         )}
                       </p>
                     </div>

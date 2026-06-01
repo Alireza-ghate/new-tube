@@ -26,19 +26,35 @@ function SearchInputSuspense() {
   function handleSearch(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     // as soon as user wrote a character in the input, redirect user to a place for showing result
-    const url = new URL("/search", APP_URL);
+    // const url = new URL("/search", APP_URL);
+
+    // const newQuery = value.trim();
+    // url.searchParams.set("query", encodeURIComponent(newQuery)); //inside my url make a searchQuery name "query" and encoded it
+
+    // if (categoryId) url.searchParams.set("categoryId", categoryId);
+
+    // if (newQuery === "") {
+    //   url.searchParams.delete("query"); //if user didnt write anything, delete query from URL
+    // }
+
+    // setValue(newQuery);
+    // router.push(url.toString()); // redirect users to a place for showing result (mydomain.com/search?query=abc)
+
+    const params = new URLSearchParams();
 
     const newQuery = value.trim();
-    url.searchParams.set("query", encodeURIComponent(newQuery)); //inside my url make a searchQuery name "query" and encoded it
 
-    if (categoryId) url.searchParams.set("categoryId", categoryId);
+    if (newQuery) {
+      params.set("query", newQuery);
+    }
 
-    if (newQuery === "") {
-      url.searchParams.delete("query"); //if user didnt write anything, delete query from URL
+    if (categoryId) {
+      params.set("categoryId", categoryId);
     }
 
     setValue(newQuery);
-    router.push(url.toString()); // redirect users to a place for showing result (mydomain.com/search?query=abc)
+
+    router.push(`/search?${params.toString()}`);
   }
 
   return (
