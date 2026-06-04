@@ -68,6 +68,18 @@ For production deployment:
 bun run build
 or connect the repository directly to Vercel for automatic deployments.
 
+## Live demo
+
+https://new-tube-4acp.vercel.app/
+
+## Screenshots
+
+![Home page](./screenshots/home-page.png)
+![Video page](./screenshots/video-page.png)
+![Studio page](./screenshots/studio-page.png)
+![User page](./screenshots/user-page.png)
+![Responsive mobile](./screenshots/responsive.PNG)
+
 ## Author
 
 Alireza Ghate
