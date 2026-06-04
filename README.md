@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NewTube
 
-## Getting Started
+A modern YouTube-inspired video streaming application built with Next.js, TypeScript, Tailwind CSS, shadcn Ui and ... .
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+NewTube is a modern video streaming platform inspired by YouTube. The project focuses on creating a fast, responsive, and user-friendly experience using modern web technologies and best practices.
+The application provides video browsing, search functionality, category-based filtering, subscription functionality, comment and reply system, upload and edit video functionality and a clean responsive user interface optimized for different screen sizes.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Key Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+🎥 Advanced video player with quality controls
+🎬 Real-time video processing with Mux
+📝 Automatic video transcription
+📊 Creator Studio with metrics
+🗂️ Custom playlist management
+📱 Responsive design across devices
+🔄 Multiple content feeds
+💬 Interactive comment system
+👍 Like and subscription system
+🎯 Watch history tracking
+🔐 Authentication system wth clerk
+👤 User profile management
+📦 feature/Module-based architecture
+🗄️ PostgreSQL with DrizzleORM
+🚀 Next.js 15 & React 19
+🔄 tRPC for type-safe APIs
+💅 TailwindCSS & ShadcnUI styling
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Tech Stack
 
-## Learn More
+- Next.js 15
+- React 19
+- TypeScript
+- Tailwind CSS
+- Shadcn ui
+- TailwindCSS
+- tRPC
+- Mux
+- Drizzle ORM
+- Neon database
 
-To learn more about Next.js, take a look at the following resources:
+## Installation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Clone the repository:
+git clone https://github.com/Alireza-ghate/new-tube.git
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Install dependencies:
 
-## Deploy on Vercel
+bun install
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Running Locally
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Start the development server:
+bun run dev
+
+## Build For Production
+
+bun run build
+
+Run production server:
+bun start
+
+## Deployment
+
+This project is deployed using Vercel.
+For production deployment:
+bun run build
+or connect the repository directly to Vercel for automatic deployments.
+
+## Author
+
+Alireza Ghate
+GitHub: https://github.com/Alireza-ghate
