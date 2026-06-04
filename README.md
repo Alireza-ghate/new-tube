@@ -84,7 +84,7 @@ https://new-tube-4acp.vercel.app/
 
 ## Studio page
 
-<img width="800"src="./screenshots/studio-page.png">
+<img width="800" src="./screenshots/studio-page.png">
 
 ## User page
 
@@ -92,7 +92,7 @@ https://new-tube-4acp.vercel.app/
 
 ## Mobile
 
-<img width="800" src="./screenshots/responsive.PNG">
+<img width="300" src="./screenshots/responsive.PNG">
 
 ## Author
 
