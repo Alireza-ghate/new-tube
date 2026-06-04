@@ -74,11 +74,25 @@ https://new-tube-4acp.vercel.app/
 
 ## Screenshots
 
-![Home page](./screenshots/home-page.png)
-![Video page](./screenshots/video-page.png)
-![Studio page](./screenshots/studio-page.png)
-![User page](./screenshots/user-page.png)
-![Responsive mobile](./screenshots/responsive.PNG)
+## Home page
+
+<img width="800" src="./screenshots/home-page.png">
+
+## Video page
+
+<img width="800" src="./screenshots/video-page.png">
+
+## Studio page
+
+<img width="800"src="./screenshots/studio-page.png">
+
+## User page
+
+<img width="800" src="./screenshots/user-page.png">
+
+## Mobile
+
+<img width="800" src="./screenshots/responsive.PNG">
 
 ## Author
 
